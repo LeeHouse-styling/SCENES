@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#EDE0CE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>SCene — Space Curation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+KR:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  box-sizing: border-box; margin: 0; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+:root {
+  --cream:      #EDE0CE;
+  --cream-mid:  #E4D4BC;
+  --cream-deep: #D9C6A8;
+  --wood:       #B8895A;
+  --wood-light: #C9A070;
+  --wood-dark:  #8B6540;
+  --ink:        #3D2B1A;
+  --ink2:       #7A6248;
+  --ink3:       #A8917A;
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+html, body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  height: 100%; overflow: hidden;
+}
+
+/* ════ APP ════ */
+#app { position: relative; width: 100%; height: 100%; overflow: hidden; }
+
+.page {
+position: absolute; inset: 0;
+overflow-y: auto; overflow-x: hidden;
+-webkit-overflow-scrolling: touch;
+overscroll-behavior-y: contain;
+background: var(–cream);
+transition: transform 0.42s cubic-bezier(0.32,0.72,0,1), opacity 0.42s ease;
+will-change: transform;
+}
+#page-list  { transform: translateX(0); opacity: 1; }
+#page-list.exit { transform: translateX(-26%); opacity: 0.45; pointer-events: none; }
+#page-detail { transform: translateX(100%); pointer-events: none; }
+#page-detail.enter { transform: translateX(0); pointer-events: all; }
+
+/* ════ SHARED HEADER ════ */
+.top-bar {
+position: sticky; top: 0; z-index: 60;
+padding-top: var(–safe-top);
+background: rgba(237,224,206,0.94);
+backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+border-bottom: 1px solid var(–cream-deep);
+}
+.top-bar-inner {
+display: flex; align-items: center;
+justify-content: space-between;
+height: 50px; padding: 0 22px;
+}
+.logo {
+font-family: ‘Cormorant’, serif;
+font-size: 22px; font-weight: 400;
+letter-spacing: 0.12em; color: var(–ink);
+}
+.logo em { font-style: italic; color: var(–wood); }
+.header-links { display: flex; gap: 20px; }
+.header-link {
+font-size: 10px; letter-spacing: 0.15em;
+text-transform: uppercase; color: var(–ink2); cursor: pointer;
+}
+.back-btn {
+display: flex; align-items: center; gap: 7px;
+background: none; border: none; cursor: pointer;
+color: var(–wood); font-family: ‘DM Sans’, sans-serif;
+font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 8px 0;
+}
+.detail-nav-label {
+font-size: 10px; letter-spacing: 0.14em;
+color: var(–ink3); text-transform: uppercase; font-family: ‘DM Sans’, sans-serif;
+}
+
+/* ════ BOTTOM NAV ════ */
+.bottom-nav {
+position: fixed; bottom: 0; left: 0; right: 0; z-index: 70;
+background: rgba(237,224,206,0.95);
+backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+border-top: 1px solid var(–cream-deep);
+display: flex; justify-content: space-around;
+padding: 8px 0 calc(8px + var(–safe-bottom));
+}
+.nav-item {
+display: flex; flex-direction: column;
+align-items: center; gap: 3px; padding: 4px 18px; cursor: pointer;
+}
+.nav-icon { font-family: ‘Cormorant’, serif; font-size: 18px; color: var(–ink3); }
+.nav-text  { font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(–ink3); font-family: ‘DM Sans’, sans-serif; }
+.nav-item.active .nav-icon,
+.nav-item.active .nav-text { color: var(–wood); }
+
+/* ══════════════════════════
+LIST PAGE
+══════════════════════════ */
+
+/* — Intro (compact) — */
+.intro {
+padding: 22px 22px 24px;       /* ← 줄인 여백 */
+border-bottom: 1px solid var(–cream-deep);
+}
+.intro-eyebrow {
+font-size: 9px; letter-spacing: 0.28em;
+text-transform: uppercase; color: var(–wood);
+font-family: ‘DM Sans’, sans-serif;
+margin-bottom: 12px;
+display: flex; align-items: center; gap: 10px;
+}
+.intro-eyebrow::after { content: ‘’; flex: 1; height: 1px; background: var(–cream-deep); }
+.intro-headline {
+font-family: ‘Cormorant’, serif;
+font-size: clamp(32px, 9.5vw, 48px);
+font-weight: 300; line-height: 1.08;
+letter-spacing: -0.01em; color: var(–ink);
+margin-bottom: 14px;
+}
+.intro-headline em { font-style: italic; color: var(–wood); }
+.intro-copy {
+font-family: ‘Noto Serif KR’, serif;
+font-size: 11.5px; font-weight: 300;
+line-height: 2.0; color: var(–ink2);
+padding-left: 14px;
+border-left: 2px solid var(–wood-light);
+}
+
+/* — Category filter tabs — */
+.cat-tabs {
+display: flex; gap: 0;
+padding: 0 22px;
+overflow-x: auto; scrollbar-width: none;
+border-bottom: 1px solid var(–cream-deep);
+position: sticky; top: 50px; z-index: 50;  /* stick below header */
+background: rgba(237,224,206,0.96);
+backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.cat-tabs::-webkit-scrollbar { display: none; }
+.cat-tab {
+flex-shrink: 0;
+padding: 12px 14px 11px;
+font-size: 10px; letter-spacing: 0.14em;
+text-transform: uppercase; color: var(–ink3);
+font-family: ‘DM Sans’, sans-serif;
+cursor: pointer;
+border-bottom: 2px solid transparent;
+transition: color 0.2s, border-color 0.2s;
+white-space: nowrap;
+margin-bottom: -1px;
+}
+.cat-tab.active { color: var(–wood); border-bottom-color: var(–wood); }
+
+/* — Category group — */
+.cat-group { display: none; }
+.cat-group.visible { display: block; }
+
+/* — Category header inside group — */
+.cat-group-header {
+padding: 28px 22px 10px;
+display: flex; align-items: baseline; gap: 10px;
+}
+.cat-group-name {
+font-family: ‘Cormorant’, serif;
+font-size: 26px; font-weight: 300; letter-spacing: -0.01em; color: var(–ink);
+}
+.cat-group-name em { font-style: italic; color: var(–wood); }
+.cat-group-count {
+font-size: 9px; letter-spacing: 0.18em;
+color: var(–ink3); font-family: ‘DM Sans’, sans-serif;
+text-transform: uppercase;
+}
+.cat-group-rule { flex: 1; height: 1px; background: var(–cream-deep); }
+
+/* — Cards inside category — */
+.cat-cards {
+padding: 6px 22px 36px;
+display: flex; flex-direction: column; gap: 36px;
+}
+
+/* Magazine card */
+.m-card {
+cursor: pointer;
+opacity: 0; transform: translateY(18px);
+transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.m-card.visible { opacity: 1; transform: translateY(0); }
+
+.card-meta {
+display: flex; align-items: center;
+justify-content: space-between; margin-bottom: 11px;
+}
+.card-scene {
+font-size: 9px; letter-spacing: 0.2em;
+text-transform: uppercase; color: var(–wood);
+font-family: ‘DM Sans’, sans-serif;
+}
+.card-date { font-size: 9px; color: var(–ink3); font-family: ‘DM Sans’, sans-serif; }
+
+.card-img-wrap {
+position: relative; overflow: hidden;
+border-radius: 2px; background: var(–cream-mid); margin-bottom: 16px;
+}
+/* Alternate aspect ratios within each category */
+.m-card:nth-child(odd)  .card-img-wrap { aspect-ratio: 4/3; }
+.m-card:nth-child(even) .card-img-wrap { aspect-ratio: 3/4; }
+
+.card-img {
+width: 100%; height: 100%; object-fit: cover; display: block;
+transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+pointer-events: none; user-select: none;
+}
+.m-card:active .card-img { transform: scale(1.03); }
+.card-img-wrap::after {
+content: ‘’; position: absolute; inset: 0;
+background: linear-gradient(160deg, rgba(61,43,26,0) 50%, rgba(61,43,26,0.18) 100%);
+pointer-events: none;
+}
+.card-badge {
+position: absolute; bottom: 12px; right: 12px;
+font-size: 8.5px; letter-spacing: 0.15em; text-transform: uppercase;
+padding: 4px 9px; border-radius: 2px;
+font-family: ‘DM Sans’, sans-serif;
+backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.card-badge.done { background: var(–wood); color: var(–cream); }
+.card-badge.wip  { background: rgba(237,224,206,0.9); color: var(–ink2); }
+
+.card-title {
+font-family: ‘Cormorant’, serif;
+font-size: clamp(22px, 6vw, 28px);
+font-weight: 400; line-height: 1.15; color: var(–ink);
+letter-spacing: -0.01em; margin-bottom: 6px;
+}
+.card-title em { font-style: italic; color: var(–wood); }
+.card-desc {
+font-family: ‘Noto Serif KR’, serif;
+font-size: 11px; font-weight: 300;
+color: var(–ink2); line-height: 1.9; margin-bottom: 14px;
+}
+.card-footer {
+display: flex; align-items: center; justify-content: space-between;
+padding-top: 12px; border-top: 1px solid var(–cream-deep);
+}
+.card-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.tag {
+font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase;
+color: var(–ink2); background: var(–cream-mid);
+padding: 3px 8px; border-radius: 2px; font-family: ‘DM Sans’, sans-serif;
+}
+.card-arrow {
+font-family: ‘Cormorant’, serif; font-size: 20px; color: var(–wood);
+transition: transform 0.2s; flex-shrink: 0;
+}
+.m-card:active .card-arrow { transform: translateX(5px); }
+
+/* All tab — show all groups stacked */
+#group-all .cat-group { display: block; }
+
+/* ══════════════════════════
+DETAIL PAGE (same as before)
+══════════════════════════ */
+.detail-content { padding-bottom: 110px; }
+.d-hero { padding: 28px 22px 28px; border-bottom: 1px solid var(–cream-deep); }
+.d-scene-tag {
+display: inline-flex; align-items: center; gap: 8px;
+font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase;
+color: var(–wood); font-family: ‘DM Sans’, sans-serif; margin-bottom: 16px;
+}
+.d-scene-tag::before { content: ‘’; width: 18px; height: 1px; background: var(–wood); }
+.d-title {
+font-family: ‘Cormorant’, serif;
+font-size: clamp(30px, 9vw, 44px);
+font-weight: 300; line-height: 1.1; color: var(–ink);
+letter-spacing: -0.01em; margin-bottom: 5px;
+}
+.d-title em { font-style: italic; color: var(–wood); }
+.d-subtitle {
+font-family: ‘Cormorant’, serif;
+font-size: 15px; font-weight: 300; font-style: italic;
+color: var(–ink2); margin-bottom: 20px;
+}
+.d-copy-block {
+padding: 16px 16px 16px 18px;
+background: var(–cream-mid);
+border-left: 2px solid var(–wood);
+border-radius: 0 2px 2px 0; margin-bottom: 22px;
+}
+.d-copy {
+font-family: ‘Noto Serif KR’, serif;
+font-size: 12.5px; font-weight: 300; line-height: 2.0; color: var(–ink);
+}
+.d-copy .hl { color: var(–wood); font-weight: 400; }
+.d-role-label {
+font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+color: var(–ink3); font-family: ‘DM Sans’, sans-serif; margin-bottom: 4px;
+}
+.d-role-name {
+font-family: ‘Cormorant’, serif; font-size: 15px; font-weight: 400;
+color: var(–ink); display: block;
+}
+.d-role-name.em { font-style: italic; color: var(–wood); }
+
+.d-section { padding: 30px 0 0; }
+.d-sec-header {
+display: flex; align-items: center; gap: 12px; padding: 0 22px 16px;
+}
+.d-sec-num {
+font-size: 9px; letter-spacing: 0.22em; color: var(–wood);
+text-transform: uppercase; font-family: ‘DM Sans’, sans-serif; white-space: nowrap;
+}
+.d-sec-title {
+font-family: ‘Cormorant’, serif; font-size: 16px;
+font-weight: 400; color: var(–ink); letter-spacing: 0.02em;
+}
+.d-sec-rule { flex: 1; height: 1px; background: var(–cream-deep); }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+.img-block { position: relative; overflow: hidden; background: var(–cream-mid); }
+.img-block img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.img-block.square    { aspect-ratio: 1/1; }
+.img-block.landscape { aspect-ratio: 4/3; }
+.img-block.portrait  { aspect-ratio: 3/4; }
+.img-block.wide      { aspect-ratio: 16/9; }
+.img-lbl {
+position: absolute; top: 10px; left: 10px;
+background: rgba(237,224,206,0.9); font-size: 8.5px; letter-spacing: 0.15em;
+text-transform: uppercase; color: var(–ink); padding: 3px 8px; border-radius: 1px;
+font-family: ‘DM Sans’, sans-serif; backdrop-filter: blur(4px);
+}
+.img-lbl.after { background: var(–wood); color: var(–cream); }
+
+.full-bleed { width: 100%; position: relative; overflow: hidden; background: var(–cream-mid); }
+.full-bleed img { width: 100%; display: block; pointer-events: none; }
+
+.after-caption { padding: 12px 22px 0; }
+.after-caption p {
+font-family: ‘Noto Serif KR’, serif; font-size: 11px; font-style: italic;
+color: var(–ink2); line-height: 1.9;
+}
+.blueprint-note { padding: 12px 22px 0; }
+.blueprint-note p {
+font-family: ‘Noto Serif KR’, serif; font-size: 11px; font-weight: 300;
+color: var(–ink2); line-height: 1.9; font-style: italic;
+}
+.blueprint-note strong { color: var(–ink); font-style: normal; font-weight: 400; }
+
+.palette-wrap { padding: 0 22px; }
+.color-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.chip { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.chip-swatch { width: 48px; height: 48px; border-radius: 2px; border: 1px solid rgba(61,43,26,0.08); }
+.chip-hex  { font-size: 8px; letter-spacing: 0.1em; color: var(–ink2); font-family: ‘DM Sans’, sans-serif; }
+.chip-name { font-size: 8px; color: var(–ink3); font-family: ‘DM Sans’, sans-serif; text-align: center; max-width: 50px; }
+.material-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+.material-row::-webkit-scrollbar { display: none; }
+.mat-chip { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.mat-swatch { width: 54px; height: 38px; border-radius: 2px; overflow: hidden; background: var(–cream-mid); border: 1px solid rgba(61,43,26,0.06); }
+.mat-swatch img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mat-label { font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: var(–ink3); font-family: ‘DM Sans’, sans-serif; }
+
+.directors-note {
+margin: 30px 22px 0; background: var(–ink); border-radius: 2px; padding: 28px 22px;
+position: relative; overflow: hidden;
+}
+.directors-note::before {
+content: ‘\201C’; position: absolute; top: -8px; left: 12px;
+font-family: ‘Cormorant’, serif; font-size: 100px;
+color: rgba(237,224,206,0.05); line-height: 1; pointer-events: none;
+}
+.note-label {
+font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase;
+color: var(–wood); font-family: ‘DM Sans’, sans-serif; margin-bottom: 14px; display: block;
+}
+.note-text {
+font-family: ‘Noto Serif KR’, serif; font-size: 12.5px;
+font-weight: 300; line-height: 2.1; color: rgba(237,224,206,0.85);
+}
+.note-text .hl { color: var(–wood-light); font-weight: 400; }
+.note-sign {
+margin-top: 18px; font-family: ‘Cormorant’, serif; font-size: 13px;
+font-style: italic; color: rgba(237,224,206,0.3); text-align: right;
+}
+
+/* fade */
+.fu { opacity: 0; transform: translateY(14px); transition: opacity 0.45s ease, transform 0.45s ease; }
+.fu.vis { opacity: 1; transform: translateY(0); }
+
+/* ── Impact Metrics ── */
+.impact-block {
+margin: 0 22px;
+padding: 18px 20px;
+background: var(–cream-mid);
+border-left: 2px solid var(–wood);
+border-radius: 0 2px 2px 0;
+}
+.impact-label {
+font-size: 9px; letter-spacing: 0.22em;
+text-transform: uppercase; color: var(–wood);
+font-family: ‘DM Sans’, sans-serif;
+margin-bottom: 12px; display: block;
+}
+.impact-list {
+list-style: none; display: flex; flex-direction: column; gap: 10px;
+}
+.impact-item {
+display: flex; align-items: flex-start; gap: 10px;
+}
+.impact-dot {
+width: 5px; height: 5px; border-radius: 50%;
+background: var(–wood); flex-shrink: 0; margin-top: 6px;
+}
+.impact-text {
+font-family: ‘Noto Serif KR’, serif;
+font-size: 12px; font-weight: 300;
+color: var(–ink); line-height: 1.8;
+}
+.impact-text strong {
+color: var(–wood); font-weight: 400;
+}
+
+/* ── POPUP ── */
+.popup-backdrop {
+position: fixed; inset: 0; z-index: 200;
+background: rgba(61,43,26,0);
+pointer-events: none;
+transition: background 0.28s ease;
+}
+.popup-backdrop.open {
+background: rgba(61,43,26,0.35);
+pointer-events: all;
+}
+.popup-box {
+position: fixed; z-index: 201;
+bottom: 80px;
+left: 50%; transform: translateX(-50%) translateY(12px);
+width: calc(100% - 44px); max-width: 340px;
+background: var(–cream);
+border: 1px solid var(–cream-deep);
+border-radius: 4px;
+padding: 26px 24px 22px;
+box-shadow: 0 12px 40px rgba(61,43,26,0.18);
+opacity: 0; pointer-events: none;
+transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.32,0.72,0,1);
+}
+.popup-box.open {
+opacity: 1; pointer-events: all;
+transform: translateX(-50%) translateY(0);
+}
+.popup-close {
+position: absolute; top: 12px; right: 14px;
+background: none; border: none; cursor: pointer;
+font-size: 14px; color: var(–ink3); line-height: 1;
+padding: 4px;
+}
+.popup-eyebrow {
+font-size: 8.5px; letter-spacing: 0.24em;
+text-transform: uppercase; color: var(–wood);
+font-family: ‘DM Sans’, sans-serif; margin-bottom: 10px; display: block;
+}
+.popup-title {
+font-family: ‘Cormorant’, serif;
+font-size: 22px; font-weight: 400; color: var(–ink);
+margin-bottom: 14px; line-height: 1.1;
+}
+.popup-title em { font-style: italic; color: var(–wood); }
+.popup-body {
+font-family: ‘Noto Serif KR’, serif;
+font-size: 11.5px; font-weight: 300;
+color: var(–ink2); line-height: 1.9;
+}
+.popup-divider {
+height: 1px; background: var(–cream-deep); margin: 16px 0;
+}
+.popup-contact-row {
+display: flex; flex-direction: column; gap: 8px;
+}
+.popup-contact-item {
+display: flex; align-items: center; gap: 10px;
+}
+.popup-contact-label {
+font-size: 8.5px; letter-spacing: 0.16em; text-transform: uppercase;
+color: var(–ink3); font-family: ‘DM Sans’, sans-serif; width: 52px; flex-shrink: 0;
+}
+.popup-contact-value {
+font-family: ‘DM Sans’, sans-serif;
+font-size: 12px; color: var(–ink); letter-spacing: 0.02em;
+}
+</style>
+
+</head>
+<body>
+<div id="app">
+
+<!-- ══ LIST PAGE ══ -->
+
+<div class="page" id="page-list">
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <span class="logo">SC<em>ene</em></span>
+      <div class="header-links">
+        <span class="header-link" data-popup="about">About</span>
+        <span class="header-link" data-popup="contact">Contact</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Intro -->
+
+  <div class="intro fu">
+    <p class="intro-eyebrow">Space Curation Studio</p>
+    <h1 class="intro-headline">당신의 공간을<br><em>편집</em>합니다</h1>
+    <p class="intro-copy">디지털 시네마틱의 정교함으로 일상의 시각적 노이즈를 제거하고, 공간을 가장 완벽한 세트장으로.</p>
+  </div>
+
+  <!-- Category Tabs -->
+
+  <div class="cat-tabs" id="cat-tabs">
+    <span class="cat-tab active" data-cat="all">전체</span>
+    <span class="cat-tab" data-cat="living">거실</span>
+    <span class="cat-tab" data-cat="bedroom">침실 · 방</span>
+    <span class="cat-tab" data-cat="kitchen">주방</span>
+    <span class="cat-tab" data-cat="dressroom">드레스룸</span>
+  </div>
+
+  <!-- Groups container -->
+
+  <div id="groups-container"></div>
+</div>
+
+<!-- ══ DETAIL PAGE ══ -->
+
+<div class="page" id="page-detail">
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <button class="back-btn" id="back-btn"><span>←</span> Back</button>
+      <span class="detail-nav-label" id="d-nav-label"></span>
+    </div>
+  </header>
+  <div class="detail-content" id="detail-content"></div>
+</div>
+
+</div><!-- #app -->
+
+<!-- POPUPS -->
+
+<div class="popup-backdrop" id="popup-backdrop"></div>
+
+<!-- Work popup -->
+
+<div class="popup-box" id="popup-work">
+  <button class="popup-close" onclick="closePopup()">✕</button>
+  <span class="popup-eyebrow">Portfolio</span>
+  <h3 class="popup-title">Selected <em>Works</em></h3>
+  <p class="popup-body">거실 · 침실 · 주방 · 드레스룸<br>공간별 큐레이션 프로젝트를 확인하세요.<br>카테고리 탭에서 원하는 공간을 선택할 수 있어요.</p>
+</div>
+
+<!-- About popup -->
+
+<div class="popup-box" id="popup-about">
+  <button class="popup-close" onclick="closePopup()">✕</button>
+  <span class="popup-eyebrow">About</span>
+  <h3 class="popup-title">Space <em>Curator</em></h3>
+  <p class="popup-body">디지털 시네마틱의 정교함으로 일상의 시각적 노이즈를 편집합니다.<br><br>AI 설계 시뮬레이션부터 가구 배치, 수납 프로토콜, 컬러 큐레이션까지 — 공간을 가장 완벽한 세트장으로 만드는 작업을 합니다.</p>
+  <div class="popup-divider"></div>
+  <p class="popup-body">Digital Cinematic Director<br>&amp; Space Curator <strong style="color:var(--wood);">YOUR NAME</strong></p>
+</div>
+
+<!-- Contact popup -->
+
+<div class="popup-box" id="popup-contact">
+  <button class="popup-close" onclick="closePopup()">✕</button>
+  <span class="popup-eyebrow">Contact</span>
+  <h3 class="popup-title">Get in <em>Touch</em></h3>
+  <div class="popup-contact-row">
+    <div class="popup-contact-item">
+      <span class="popup-contact-label">Email</span>
+      <span class="popup-contact-value">your@email.com</span>
+    </div>
+    <div class="popup-contact-item">
+      <span class="popup-contact-label">Instagram</span>
+      <span class="popup-contact-value">@yourhandle</span>
+    </div>
+    <div class="popup-contact-item">
+      <span class="popup-contact-label">Kakao</span>
+      <span class="popup-contact-value">yourkakaoid</span>
+    </div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <div class="nav-item active" data-popup="work"><span class="nav-icon">◈</span><span class="nav-text">Work</span></div>
+  <div class="nav-item" data-popup="about"><span class="nav-icon">◎</span><span class="nav-text">About</span></div>
+  <div class="nav-item" data-popup="contact"><span class="nav-icon">✉</span><span class="nav-text">Contact</span></div>
+</nav>
+
+<script>
+/* ─── DATA ─── */
+const CATEGORIES = [
+  { id: "living",    label: "거실",      em: "Living Room" },
+  { id: "bedroom",   label: "침실 · 방", em: "Bedroom" },
+  { id: "kitchen",   label: "주방",      em: "Kitchen" },
+  { id: "dressroom", label: "드레스룸",  em: "Dress Room" },
+];
+
+const PROJECTS = [
+  {
+    id: 1, cat: "living",
+    scene: "Scene #01", date: "2025. 03",
+    title: "아파트의", titleEm: "반란",
+    subtitle: "거실의 재해석",
+    desc: "전형적인 한국 아파트 거실을 시네마틱 공간으로 전환한 프로젝트",
+    tags: ["Styling","Organizing","Paint"], status: "done",
+    cover: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85",
+    detail: {
+      mainCopy: `디지털 프레임 안의 <span class="hl">미장센</span>을 당신의 <span class="hl">물리적 공간</span>으로 소환합니다.`,
+      role: "Digital Cinematic Director & Space Curator", roleName: "YOUR NAME",
+      before: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80","https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80"],
+      blueprint: { img: "https://images.unsplash.com/photo-1618220179428-22790b461013?w=900&q=80", note: "실제 작업 전 AI 툴로 생성한 이상적 공간 시안. 조명·가구·컬러 톤을 미리 시뮬레이션해 오차를 최소화했다." },
+      after: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=90",
+      organizing: ["https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=600&q=80","https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80"],
+      texture: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80","https://images.unsplash.com/photo-1617104551722-3b2d51366400?w=600&q=80"],
+      palette: [{hex:"#E8DDD0",name:"Linen"},{hex:"#C4956A",name:"Terra"},{hex:"#8B8070",name:"Stone"},{hex:"#3A3530",name:"Espresso"},{hex:"#F0EAE2",name:"Off White"}],
+      materials: [{label:"Oak Wood",img:"https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=200&q=80"},{label:"Matte Steel",img:null,bg:"#d0ceca"},{label:"Linen",img:"https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=200&q=80"}],
+      metrics: [
+        "이 가구 배치를 통해 <strong>동선을 15% 단축</strong>함.",
+        "정리 시스템 도입 후 물건을 찾는 시간이 <strong>하루 평균 10분 감소</strong>함."
+      ],
+      directorNote: `0.1초의 프레임 오차도 허용하지 않는 <span class="hl">디지털 시네마틱</span>의 정교함으로, 당신의 일상을 방해하는 <span class="hl">시각적 노이즈를 편집</span>했습니다.<br><br>이제 이 공간은 당신의 삶을 담는 가장 완벽한 <span class="hl">세트장</span>이 됩니다.`
+    }
+  },
+  {
+    id: 2, cat: "living",
+    scene: "Scene #05", date: "2024. 10",
+    title: "빛의", titleEm: "각도",
+    subtitle: "조명 재배치 프로젝트",
+    desc: "기존 조명을 교체하지 않고 각도와 색온도만 바꿔 공간의 무드를 완전히 전환",
+    tags: ["Lighting","Styling"], status: "done",
+    cover: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=900&q=85",
+    detail: {
+      mainCopy: `빛의 <span class="hl">각도</span> 하나가 공간의 온도를 바꿉니다.`,
+      role: "Digital Cinematic Director & Space Curator", roleName: "YOUR NAME",
+      before: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80","https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80"],
+      blueprint: { img: "https://images.unsplash.com/photo-1618220179428-22790b461013?w=900&q=80", note: "조명 각도와 색온도 시뮬레이션. 새 조명 구매 없이 배치만으로 무드를 바꾸는 방법을 먼저 검증했다." },
+      after: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=90",
+      organizing: ["https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=600&q=80","https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80"],
+      texture: ["https://images.unsplash.com/photo-1617104551722-3b2d51366400?w=600&q=80","https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80"],
+      palette: [{hex:"#F5EDD8",name:"Candlelight"},{hex:"#D4A96A",name:"Amber"},{hex:"#8C7355",name:"Walnut"},{hex:"#2C2218",name:"Noir"}],
+      materials: [{label:"Brass",img:null,bg:"#c8a84a"},{label:"Rattan",img:"https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=200&q=80"}],
+      metrics: [
+        "이 가구 배치를 통해 <strong>동선을 15% 단축</strong>함.",
+        "정리 시스템 도입 후 물건을 찾는 시간이 <strong>하루 평균 10분 감소</strong>함."
+      ],
+      directorNote: `조명은 공간의 <span class="hl">편집자</span>다.<br><br>무엇을 보이게 하고 무엇을 숨길지, 빛의 방향이 모든 것을 결정한다.`
+    }
+  },
+  {
+    id: 3, cat: "bedroom",
+    scene: "Scene #02", date: "2025. 02",
+    title: "침실의", titleEm: "밀도",
+    subtitle: "수면 공간 큐레이션",
+    desc: "물건을 줄이고 빛을 더해, 가장 조용한 방을 만드는 과정",
+    tags: ["Bedroom","Light","Minimal"], status: "done",
+    cover: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85",
+    detail: {
+      mainCopy: `수면이라는 <span class="hl">가장 사적인 행위</span>를 위해, 공간의 밀도를 가장 낮은 곳까지 낮춥니다.`,
+      role: "Digital Cinematic Director & Space Curator", roleName: "YOUR NAME",
+      before: ["https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80","https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"],
+      blueprint: { img: "https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=900&q=80", note: "최소한의 가구 배치와 채광 계획을 AI로 사전 검토. 불필요한 시각 요소를 사전에 제거했다." },
+      after: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1200&q=90",
+      organizing: ["https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=600&q=80","https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80"],
+      texture: ["https://images.unsplash.com/photo-1617104551722-3b2d51366400?w=600&q=80","https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80"],
+      palette: [{hex:"#F5F0E8",name:"Chalk"},{hex:"#D4C5A9",name:"Parchment"},{hex:"#9B8E7E",name:"Greige"},{hex:"#5C5248",name:"Umber"}],
+      materials: [{label:"Walnut",img:"https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=200&q=80"},{label:"Cotton",img:"https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=200&q=80"}],
+      metrics: [
+        "이 가구 배치를 통해 <strong>동선을 15% 단축</strong>함.",
+        "정리 시스템 도입 후 물건을 찾는 시간이 <strong>하루 평균 10분 감소</strong>함."
+      ],
+      directorNote: `빛이 가장 조용하게 들어오는 방향을 먼저 찾았다.<br><br>그 빛을 <span class="hl">방해하는 것들을 하나씩 편집</span>했을 때, 침실은 비로소 제 역할을 찾았다.`
+    }
+  },
+  {
+    id: 4, cat: "dressroom",
+    scene: "Scene #07", date: "2025. 02",
+    title: "옷장의", titleEm: "편집",
+    subtitle: "드레스룸 오거나이징",
+    desc: "계절·용도·컬러 기준으로 재분류한 드레스룸. 꺼내기 쉽고 돌아오기 쉬운 수납 설계",
+    tags: ["Dressroom","Organizing","Styling"], status: "done",
+    cover: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=900&q=85",
+    detail: {
+      mainCopy: `옷장은 매일 아침 가장 먼저 마주하는 <span class="hl">첫 번째 공간</span>입니다.`,
+      role: "Digital Cinematic Director & Space Curator", roleName: "YOUR NAME",
+      before: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80","https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80"],
+      blueprint: { img: "https://images.unsplash.com/photo-1618220179428-22790b461013?w=900&q=80", note: "계절·카테고리·컬러 3축 분류 체계를 AI로 시뮬레이션. 꺼내는 빈도를 기준으로 수납 위치를 결정했다." },
+      after: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1200&q=90",
+      organizing: ["https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=600&q=80","https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80"],
+      texture: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80","https://images.unsplash.com/photo-1617104551722-3b2d51366400?w=600&q=80"],
+      palette: [{hex:"#F0EAE2",name:"Linen"},{hex:"#C8B8A2",name:"Almond"},{hex:"#8C7B6A",name:"Driftwood"},{hex:"#3A3028",name:"Sable"}],
+      materials: [{label:"Oak",img:"https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=200&q=80"},{label:"Linen",img:"https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=200&q=80"},{label:"Matte Steel",img:null,bg:"#c8c4be"}],
+      metrics: [
+        "이 가구 배치를 통해 <strong>동선을 15% 단축</strong>함.",
+        "정리 시스템 도입 후 물건을 찾는 시간이 <strong>하루 평균 10분 감소</strong>함."
+      ],
+      directorNote: `드레스룸은 <span class="hl">하루를 여는 공간</span>이다.<br><br>꺼내기 쉽고 돌려놓기 쉬운 구조가 만들어질 때, 공간은 비로소 <span class="hl">리듬</span>을 갖는다.`
+    }
+  },
+  {
+    id: 5, cat: "kitchen",
+    scene: "Scene #03", date: "2025. 01",
+    title: "주방의", titleEm: "문법",
+    subtitle: "키친 오거나이징",
+    desc: "수납 프로토콜을 적용한 주방 재편집. 보이는 것과 숨기는 것의 균형",
+    tags: ["Kitchen","Organizing"], status: "wip",
+    cover: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85",
+    detail: {
+      mainCopy: `보이는 것과 숨기는 것의 <span class="hl">균형</span>이 주방의 문법을 결정합니다.`,
+      role: "Digital Cinematic Director & Space Curator", roleName: "YOUR NAME",
+      before: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80","https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80"],
+      blueprint: { img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=80", note: "수납 동선과 카운터 가시성을 기준으로 구역을 나눴다. 어떤 것을 노출하고 어떤 것을 감출지가 설계의 핵심이었다." },
+      after: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&q=90",
+      organizing: ["https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=600&q=80","https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80"],
+      texture: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80","https://images.unsplash.com/photo-1617104551722-3b2d51366400?w=600&q=80"],
+      palette: [{hex:"#EAEAE6",name:"Frost"},{hex:"#C8BFB0",name:"Sand"},{hex:"#7A7060",name:"Taupe"},{hex:"#2E2A24",name:"Charcoal"}],
+      materials: [{label:"Marble",img:"https://images.unsplash.com/photo-1615529162924-f8605388461d?w=200&q=80"},{label:"Steel",img:null,bg:"#c8c8c4"},{label:"Oak",img:"https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=200&q=80"}],
+      directorNote: `주방은 <span class="hl">가장 많은 물건이 집결</span>하는 공간이다.<br><br>그렇기에 수납 프로토콜이 가장 엄격하게 적용돼야 하는 곳이기도 하다.`
+    }
+  },
+];
+
+/* ─── BUILD GROUPS ─── */
+const container = document.getElementById('groups-container');
+
+CATEGORIES.forEach(cat => {
+  const items = PROJECTS.filter(p => p.cat === cat.id);
+  if (!items.length) return;
+
+  const group = document.createElement('div');
+  group.className = 'cat-group';
+  group.dataset.cat = cat.id;
+
+  group.innerHTML = `
+    <div class="cat-group-header">
+      <h2 class="cat-group-name">${cat.label} <em>/ ${cat.em}</em></h2>
+      <span class="cat-group-count">${items.length} project${items.length>1?'s':''}</span>
+      <span class="cat-group-rule"></span>
+    </div>
+    <div class="cat-cards" id="cards-${cat.id}"></div>
+  `;
+  container.appendChild(group);
+
+  const cardsEl = group.querySelector(`#cards-${cat.id}`);
+  items.forEach(p => {
+    const card = document.createElement('article');
+    card.className = 'm-card';
+    card.innerHTML = `
+      <div class="card-meta">
+        <span class="card-scene">${p.scene}</span>
+        <span class="card-date">${p.date}</span>
+      </div>
+      <div class="card-img-wrap">
+        <img class="card-img" src="${p.cover}" loading="lazy" alt="${p.title}${p.titleEm}">
+        <span class="card-badge ${p.status}">${p.status==='done'?'Completed':'In Progress'}</span>
+      </div>
+      <div>
+        <h3 class="card-title">${p.title} <em>${p.titleEm}</em></h3>
+        <p class="card-desc">${p.desc}</p>
+        <div class="card-footer">
+          <div class="card-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+    `;
+    card.addEventListener('click', () => openDetail(p));
+    cardsEl.appendChild(card);
+  });
+});
+
+/* show all by default */
+showCat('all');
+
+/* ─── CATEGORY FILTER ─── */
+function showCat(cat) {
+  document.querySelectorAll('.cat-group').forEach(g => {
+    if (cat === 'all') { g.classList.add('visible'); }
+    else { g.classList.toggle('visible', g.dataset.cat === cat); }
+  });
+  // re-observe cards
+  setTimeout(() => observeCards(), 50);
+}
+
+document.querySelectorAll('.cat-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    showCat(tab.dataset.cat);
+    // scroll list page to groups
+    document.getElementById('page-list').scrollTo({ top: 160, behavior: 'smooth' });
+  });
+});
+
+/* ─── SCROLL FADE ─── */
+const listIO = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); listIO.unobserve(e.target); }});
+}, { threshold: 0.06 });
+
+function observeCards() {
+  document.querySelectorAll('.m-card:not(.visible)').forEach((el,i) => {
+    el.style.transitionDelay = `${i*50}ms`;
+    listIO.observe(el);
+  });
+}
+document.querySelectorAll('.fu').forEach(el => listIO.observe(el));
+observeCards();
+
+/* ─── DETAIL ─── */
+function buildDetail(p) {
+  const d = p.detail;
+  return `
+    <div class="d-hero fu">
+      <p class="d-scene-tag">${p.scene} · ${p.subtitle}</p>
+      <h2 class="d-title">${p.title} <em>${p.titleEm}</em></h2>
+      <p class="d-subtitle">${p.subtitle}</p>
+      <div class="d-copy-block"><p class="d-copy">${d.mainCopy}</p></div>
+      <p class="d-role-label">Directed by</p>
+      <span class="d-role-name">${d.role}</span>
+      <span class="d-role-name em">${d.roleName}</span>
+    </div>
+    <div class="d-section fu">
+      <div class="d-sec-header"><span class="d-sec-num">01</span><span class="d-sec-title">Before</span><span class="d-sec-rule"></span></div>
+      <div class="two-col">
+        <div class="img-block square"><img src="${d.before[0]}" loading="lazy"><span class="img-lbl">Before · 01</span></div>
+        <div class="img-block square"><img src="${d.before[1]}" loading="lazy"><span class="img-lbl">Before · 02</span></div>
+      </div>
+    </div>
+    <div class="d-section fu">
+      <div class="d-sec-header"><span class="d-sec-num">02</span><span class="d-sec-title">AI Design Blueprint</span><span class="d-sec-rule"></span></div>
+      <div class="img-block wide" style="margin:0 22px;border-radius:2px;"><img src="${d.blueprint.img}" loading="lazy"><span class="img-lbl">AI Blueprint</span></div>
+      <div class="blueprint-note"><p><strong>AI 시공간 설계도.</strong> ${d.blueprint.note}</p></div>
+    </div>
+    <div class="d-section fu">
+      <div class="d-sec-header"><span class="d-sec-num">03</span><span class="d-sec-title">After — Best Cut</span><span class="d-sec-rule"></span></div>
+      <div class="full-bleed"><img src="${d.after}" loading="lazy"><span class="img-lbl after">After · Best Cut</span></div>
+      <div class="after-caption"><p>시공 완료 후, 시네마틱 조명과 구도로 포착한 메인 컷.</p></div>
+      ${d.metrics ? `
+      <div class="impact-block" style="margin-top:14px;">
+        <span class="impact-label">Impact</span>
+        <ul class="impact-list">
+          ${d.metrics.map(m => `
+            <li class="impact-item">
+              <span class="impact-dot"></span>
+              <span class="impact-text">${m}</span>
+            </li>`).join('')}
+        </ul>
+      </div>` : ''}
+    </div>
+    <div class="d-section fu">
+      <div class="d-sec-header"><span class="d-sec-num">04</span><span class="d-sec-title">Organizing Detail</span><span class="d-sec-rule"></span></div>
+      <div class="two-col">
+        <div class="img-block square"><img src="${d.organizing[0]}" loading="lazy"><span class="img-lbl">수납 프로토콜 · A</span></div>
+        <div class="img-block square"><img src="${d.organizing[1]}" loading="lazy"><span class="img-lbl">수납 프로토콜 · B</span></div>
+      </div>
+    </div>
+    <div class="d-section fu">
+      <div class="d-sec-header"><span class="d-sec-num">05</span><span class="d-sec-title">Object &amp; Texture</span><span class="d-sec-rule"></span></div>
+      <div class="two-col">
+        <div class="img-block portrait"><img src="${d.texture[0]}" loading="lazy"><span class="img-lbl">소재 · 01</span></div>
+        <div class="img-block portrait"><img src="${d.texture[1]}" loading="lazy"><span class="img-lbl">오브젝트 · 02</span></div>
+      </div>
+    </div>
+    <div class="d-section fu">
+      <div class="d-sec-header"><span class="d-sec-num">06</span><span class="d-sec-title">Color &amp; Material Palette</span><span class="d-sec-rule"></span></div>
+      <div class="palette-wrap">
+        <div class="color-chips">${d.palette.map(c=>`<div class="chip"><div class="chip-swatch" style="background:${c.hex}"></div><span class="chip-hex">${c.hex}</span><span class="chip-name">${c.name}</span></div>`).join('')}</div>
+        <div class="material-row">${d.materials.map(m=>`<div class="mat-chip"><div class="mat-swatch"${m.bg?` style="background:${m.bg}"`:''}>${m.img?`<img src="${m.img}" loading="lazy">`:''}  </div><span class="mat-label">${m.label}</span></div>`).join('')}</div>
+      </div>
+    </div>
+    <div class="directors-note fu">
+      <span class="note-label">Director's Note</span>
+      <p class="note-text">${d.directorNote}</p>
+      <p class="note-sign">— ${d.roleName}, Space Curator</p>
+    </div>
+  `;
+}
+
+const pageList = document.getElementById('page-list');
+const pageDetail = document.getElementById('page-detail');
+const detailContent = document.getElementById('detail-content');
+
+function openDetail(p) {
+  document.getElementById('d-nav-label').textContent = p.scene;
+  detailContent.innerHTML = buildDetail(p);
+  pageDetail.scrollTop = 0;
+  pageList.classList.add('exit');
+  pageDetail.classList.add('enter');
+  requestAnimationFrame(() => {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); }});
+    }, { threshold: 0.06 });
+    detailContent.querySelectorAll('.fu').forEach(el => io.observe(el));
+  });
+}
+function goBack() {
+  pageDetail.classList.remove('enter');
+  pageList.classList.remove('exit');
+  setTimeout(() => { detailContent.innerHTML = ''; }, 450);
+}
+document.getElementById('back-btn').addEventListener('click', goBack);
+let sx=0, sy=0;
+pageDetail.addEventListener('touchstart', e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; }, {passive:true});
+pageDetail.addEventListener('touchend', e=>{
+  const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+  if(dx>60 && Math.abs(dy)<60 && sx<44) goBack();
+}, {passive:true});
+
+/* ─── POPUP ─── */
+let currentPopup = null;
+
+function openPopup(name) {
+  closePopup(); // 혹시 열려있는 거 먼저 닫기
+  const box = document.getElementById('popup-' + name);
+  if (!box) return;
+  currentPopup = name;
+  document.getElementById('popup-backdrop').classList.add('open');
+  box.classList.add('open');
+}
+
+function closePopup() {
+  if (!currentPopup) return;
+  document.getElementById('popup-' + currentPopup)?.classList.remove('open');
+  document.getElementById('popup-backdrop').classList.remove('open');
+  currentPopup = null;
+}
+
+// 바텀 nav 클릭
+document.querySelectorAll('.nav-item[data-popup]').forEach(item => {
+  item.addEventListener('click', () => {
+    const name = item.dataset.popup;
+    if (currentPopup === name) { closePopup(); return; }
+    openPopup(name);
+  });
+});
+
+// 헤더 링크 클릭
+document.querySelectorAll('.header-link[data-popup]').forEach(link => {
+  link.addEventListener('click', () => {
+    const name = link.dataset.popup;
+    if (currentPopup === name) { closePopup(); return; }
+    openPopup(name);
+  });
+});
+
+// 배경 클릭 시 닫기
+document.getElementById('popup-backdrop').addEventListener('click', closePopup);
+</script>
+
+</body>
+</html>
