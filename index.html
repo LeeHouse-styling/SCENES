@@ -281,10 +281,169 @@ transition: background 0.4s, color 0.4s;
 .note-sign { font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 0.2em; color: var(–teal-dark); text-transform: uppercase; }
 
 /* footer */
-footer { background: var(–charcoal); padding: 52px 56px; display: flex; align-items: center; justify-content: space-between; }
+footer { background: var(–charcoal); padding: 52px 56px 120px; display: flex; align-items: center; justify-content: space-between; }
 .footer-logo { font-family: ‘Cormorant Garamond’, serif; font-size: 22px; font-weight: 300; color: var(–cream); letter-spacing: 0.05em; }
 .footer-logo span { color: var(–teal-light); }
 .footer-info { font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 0.16em; color: rgba(255,255,255,0.3); text-transform: uppercase; text-align: right; line-height: 1.9; }
+
+/* ── FLOATING CTA ── */
+.floating-cta {
+position: fixed;
+bottom: 32px;
+left: 50%;
+transform: translateX(-50%);
+z-index: 300;
+display: flex;
+gap: 12px;
+align-items: center;
+animation: floatUp 0.8s ease 0.8s both;
+}
+
+@keyframes floatUp {
+from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.float-btn {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 14px 26px;
+border-radius: 56px;
+font-family: ‘Noto Sans KR’, sans-serif;
+font-size: 13px;
+font-weight: 400;
+letter-spacing: 0.04em;
+cursor: pointer;
+border: none;
+white-space: nowrap;
+transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+box-shadow: 0 8px 32px rgba(30,30,28,0.18), 0 2px 8px rgba(30,30,28,0.1);
+text-decoration: none;
+}
+.float-btn:hover {
+transform: translateY(-3px);
+box-shadow: 0 16px 40px rgba(30,30,28,0.22), 0 4px 12px rgba(30,30,28,0.12);
+}
+.float-btn:active { transform: translateY(0); }
+
+.float-btn-survey {
+background: var(–linen);
+color: var(–charcoal);
+border: 1px solid rgba(30,30,28,0.1);
+}
+.float-btn-survey:hover { background: var(–sand); }
+
+.float-btn-inquiry {
+background: var(–charcoal);
+color: var(–cream);
+}
+.float-btn-inquiry:hover { background: #2c2c2a; }
+
+.float-dot {
+width: 7px; height: 7px;
+border-radius: 50%;
+flex-shrink: 0;
+animation: pulse 2s ease infinite;
+}
+.float-btn-survey .float-dot { background: var(–teal-dark); }
+.float-btn-inquiry .float-dot { background: var(–teal-light); }
+
+@keyframes pulse {
+0%,100% { opacity:1; transform:scale(1); }
+50%      { opacity:0.45; transform:scale(0.65); }
+}
+
+@media (max-width: 640px) {
+.floating-cta { bottom: 20px; gap: 8px; width: calc(100% - 32px); }
+.float-btn { padding: 12px 18px; font-size: 12px; flex: 1; justify-content: center; }
+}
+
+/* ── CONTACT POPUP ── */
+.contact-popup {
+position: fixed;
+bottom: 96px;
+left: 50%;
+transform: translateX(40%) scale(0.94);
+z-index: 400;
+background: var(–cream);
+border: 1px solid rgba(30,30,28,0.1);
+border-radius: 16px;
+padding: 24px 28px;
+width: 280px;
+box-shadow: 0 20px 60px rgba(30,30,28,0.16), 0 4px 16px rgba(30,30,28,0.08);
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.contact-popup.open {
+opacity: 1;
+pointer-events: all;
+transform: translateX(40%) scale(1);
+}
+
+.contact-popup-arrow {
+position: absolute;
+bottom: -7px;
+left: 50%;
+transform: translateX(-50%) rotate(45deg);
+width: 13px; height: 13px;
+background: var(–cream);
+border-right: 1px solid rgba(30,30,28,0.1);
+border-bottom: 1px solid rgba(30,30,28,0.1);
+}
+
+.contact-popup-title {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 18px; font-weight: 400; letter-spacing: 0.06em;
+color: var(–charcoal);
+margin-bottom: 18px;
+padding-bottom: 14px;
+border-bottom: 1px solid var(–linen);
+}
+
+.contact-rows { display: flex; flex-direction: column; gap: 14px; }
+
+.contact-row {
+display: flex;
+align-items: center;
+gap: 14px;
+}
+
+.contact-icon {
+width: 34px; height: 34px;
+background: var(–linen);
+border-radius: 10px;
+display: flex; align-items: center; justify-content: center;
+font-size: 15px;
+flex-shrink: 0;
+}
+
+.contact-label {
+display: block;
+font-family: ‘DM Mono’, monospace;
+font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+color: var(–stone);
+margin-bottom: 2px;
+}
+
+.contact-value {
+font-size: 13px; color: var(–charcoal);
+text-decoration: none; letter-spacing: 0.01em;
+transition: color 0.2s;
+}
+.contact-value:hover { color: var(–teal-dark); }
+
+@media (max-width: 640px) {
+.contact-popup {
+left: 50%;
+transform: translateX(-50%) scale(0.94);
+bottom: 90px;
+}
+.contact-popup.open {
+transform: translateX(-50%) scale(1);
+}
+}
 
 /* reveal */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -316,7 +475,7 @@ nav{padding:18px 24px;}
 .mats{grid-template-columns:repeat(2,1fr);}
 .after-bottom{flex-direction:column;align-items:flex-start;gap:14px;padding:36px 24px;}
 .sp-note{padding:80px 24px;}
-footer{padding:40px 24px;flex-direction:column;gap:20px;}
+footer{padding:40px 24px 120px;flex-direction:column;gap:20px;}
 .footer-info{text-align:left;}
 }
 </style>
@@ -331,6 +490,49 @@ footer{padding:40px 24px;flex-direction:column;gap:20px;}
     <span class="nav-scene-tag" id="nav-tag"></span>
   </div>
 </nav>
+
+<!-- FLOATING CTA -->
+
+<div class="floating-cta">
+  <a href="#" class="float-btn float-btn-survey">
+    <span class="float-dot"></span>
+    설문지 참여
+  </a>
+  <button class="float-btn float-btn-inquiry" onclick="toggleContact(event)">
+    <span class="float-dot"></span>
+    연락처
+  </button>
+</div>
+
+<!-- CONTACT POPUP -->
+
+<div class="contact-popup" id="contact-popup">
+  <div class="contact-popup-arrow"></div>
+  <p class="contact-popup-title">Contact</p>
+  <div class="contact-rows">
+    <div class="contact-row">
+      <span class="contact-icon">✉</span>
+      <div>
+        <span class="contact-label">이메일</span>
+        <a href="mailto:hello@spaceorder.kr" class="contact-value">hello@spaceorder.kr</a>
+      </div>
+    </div>
+    <div class="contact-row">
+      <span class="contact-icon">💬</span>
+      <div>
+        <span class="contact-label">카카오톡</span>
+        <a href="#" class="contact-value">@spaceorder</a>
+      </div>
+    </div>
+    <div class="contact-row">
+      <span class="contact-icon">📷</span>
+      <div>
+        <span class="contact-label">인스타그램</span>
+        <a href="#" class="contact-value">@space.order</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ══════════ MAIN PAGE ══════════ -->
 
@@ -482,9 +684,9 @@ const SPACES = {
 
 const root = document.documentElement;
 
-function openSpace(key) {
+/* 콘텐츠 렌더만 담당 — 히스토리 조작 없음 */
+function renderSpace(key) {
   const d = SPACES[key];
-
   root.style.setProperty('--accent', d.accent);
   root.style.setProperty('--accent-light', d.accentLight);
   root.style.setProperty('--accent-dark', d.accentDark);
@@ -494,35 +696,27 @@ function openSpace(key) {
   document.getElementById('sp-title').innerHTML = `${d.t1}<br><em>${d.t2}</em>`;
   document.getElementById('sp-copy').innerHTML = `"${d.copy}"`;
   document.getElementById('sp-hero-bg').style.background = d.heroBg;
-
   document.getElementById('before-a-bg').style.background = d.baA;
   document.getElementById('before-a-cap').textContent = d.bcA;
   document.getElementById('before-b-bg').style.background = d.baB;
   document.getElementById('before-b-cap').textContent = d.bcB;
-
   document.getElementById('bp-items').innerHTML = d.bp.map((t,i) =>
     `<div class="bp-row"><span class="bp-num">0${i+1}</span><span class="bp-text">${t}</span></div>`
   ).join('');
-
   document.getElementById('after-bg').style.background = d.afterBg;
   document.getElementById('after-meta').innerHTML = d.am;
-
   document.getElementById('detail-a-bg').style.background = d.daA;
   document.getElementById('detail-a-cap').textContent = `"${d.dcA}"`;
   document.getElementById('detail-b-bg').style.background = d.daB;
   document.getElementById('detail-b-cap').textContent = `"${d.dcB}"`;
-
   document.getElementById('tex-main').style.background = d.txM;
   document.getElementById('tex-sm1').style.background = d.txS;
-
   document.getElementById('chips').innerHTML = d.chips.map(c =>
     `<div class="chip"><div class="chip-sw" style="background:${c.b};${c.br?'border:'+c.br:''}"></div><span class="chip-name">${c.n}</span><span class="chip-hex">${c.h}</span></div>`
   ).join('');
-
   document.getElementById('mats').innerHTML = d.mats.map(m =>
     `<div class="mat-item"><div class="mat-sw" style="background:${m.b}"></div><span class="mat-label">${m.l}</span></div>`
   ).join('');
-
   document.getElementById('note-text').innerHTML = d.note;
 
   const tag = document.getElementById('nav-tag');
@@ -533,21 +727,44 @@ function openSpace(key) {
   document.getElementById('nav-back').classList.add('show');
 
   document.querySelectorAll('#space-page .reveal').forEach(el => el.classList.remove('visible'));
-
   document.getElementById('main-page').classList.remove('active');
   document.getElementById('space-page').classList.add('active');
   window.scrollTo({ top: 0, behavior: 'instant' });
-
   setTimeout(initReveal, 80);
 }
 
-function goHome() {
+function renderHome() {
   document.getElementById('space-page').classList.remove('active');
   document.getElementById('main-page').classList.add('active');
   document.getElementById('nav-tag').classList.remove('show');
   document.getElementById('nav-back').classList.remove('show');
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
+
+/* 카드 클릭 → pushState 후 렌더 */
+function openSpace(key) {
+  history.pushState({ space: key }, '', '#' + key);
+  renderSpace(key);
+}
+
+/* UI 뒤로가기 버튼 → 브라우저 history.back() 위임 */
+function goHome() {
+  history.back();
+}
+
+/* 브라우저 뒤로/앞으로 감지 → 렌더만 호출 */
+window.addEventListener('popstate', (e) => {
+  if (e.state && e.state.space) {
+    renderSpace(e.state.space);
+  } else {
+    renderHome();
+  }
+});
+
+/* 초기 로드 — 히스토리 state 세팅 */
+(function init() {
+  history.replaceState({ space: null }, '', location.href);
+})();
 
 function initReveal() {
   const obs = new IntersectionObserver((entries) => {
@@ -558,6 +775,19 @@ function initReveal() {
 
 window.addEventListener('scroll', () => {
   document.getElementById('main-nav').style.padding = window.scrollY > 60 ? '14px 56px' : '24px 56px';
+});
+
+function toggleContact(e) {
+  e.stopPropagation();
+  const popup = document.getElementById('contact-popup');
+  popup.classList.toggle('open');
+}
+
+document.addEventListener('click', (e) => {
+  const popup = document.getElementById('contact-popup');
+  if (!popup.contains(e.target)) {
+    popup.classList.remove('open');
+  }
 });
 </script>
 
