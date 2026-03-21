@@ -3,965 +3,562 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#EDE0CE">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>SCene — Space Curation</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+KR:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Space & Order — 홈 수납정리 & 스타일링</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after {
-  box-sizing: border-box; margin: 0; padding: 0;
-  -webkit-tap-highlight-color: transparent;
-}
-:root {
-  --cream:      #EDE0CE;
-  --cream-mid:  #E4D4BC;
-  --cream-deep: #D9C6A8;
-  --wood:       #B8895A;
-  --wood-light: #C9A070;
-  --wood-dark:  #8B6540;
-  --ink:        #3D2B1A;
-  --ink2:       #7A6248;
-  --ink3:       #A8917A;
-  --safe-top:    env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-}
-html, body {
-  background: var(--cream);
-  color: var(--ink);
-  font-family: 'DM Sans', sans-serif;
+  :root {
+    --cream: #F7F4EF;
+    --warm-white: #FAFAF8;
+    --teal: #A8C4BE;
+    --teal-light: #C8DDD9;
+    --teal-dark: #6B9E97;
+    --charcoal: #1E1E1C;
+    --stone: #8A8680;
+    --linen: #E8E3DA;
+    --dark-block: #1A1A18;
+    --sand: #D4C9B8;
+    --accent: #A8C4BE;
+    --accent-light: #C8DDD9;
+    --accent-dark: #6B9E97;
+  }
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+  background: var(–cream);
+  color: var(–charcoal);
+  font-family: ‘Noto Sans KR’, sans-serif;
   font-weight: 300;
-  -webkit-font-smoothing: antialiased;
-  height: 100%; overflow: hidden;
-}
+  overflow-x: hidden;
+  }
 
-/* ════ APP ════ */
-#app { position: relative; width: 100%; height: 100%; overflow: hidden; }
-
-.page {
-position: absolute; inset: 0;
-overflow-y: auto; overflow-x: hidden;
--webkit-overflow-scrolling: touch;
-overscroll-behavior-y: contain;
-background: var(–cream);
-transition: transform 0.42s cubic-bezier(0.32,0.72,0,1), opacity 0.42s ease;
-will-change: transform;
-}
-#page-list  { transform: translateX(0); opacity: 1; }
-#page-list.exit { transform: translateX(-26%); opacity: 0.45; pointer-events: none; }
-#page-detail { transform: translateX(100%); pointer-events: none; }
-#page-detail.enter { transform: translateX(0); pointer-events: all; }
-
-/* ════ SHARED HEADER ════ */
-.top-bar {
-position: sticky; top: 0; z-index: 60;
-padding-top: var(–safe-top);
-background: rgba(237,224,206,0.94);
-backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-border-bottom: 1px solid var(–cream-deep);
-}
-.top-bar-inner {
-display: flex; align-items: center;
-justify-content: space-between;
-height: 50px; padding: 0 22px;
-}
-.logo {
-font-family: ‘Cormorant’, serif;
-font-size: 22px; font-weight: 400;
-letter-spacing: 0.12em; color: var(–ink);
-}
-.logo em { font-style: italic; color: var(–wood); }
-.header-links { display: flex; gap: 20px; }
-.header-link {
-font-size: 10px; letter-spacing: 0.15em;
-text-transform: uppercase; color: var(–ink2); cursor: pointer;
-}
-.back-btn {
-display: flex; align-items: center; gap: 7px;
-background: none; border: none; cursor: pointer;
-color: var(–wood); font-family: ‘DM Sans’, sans-serif;
-font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 8px 0;
-}
-.detail-nav-label {
-font-size: 10px; letter-spacing: 0.14em;
-color: var(–ink3); text-transform: uppercase; font-family: ‘DM Sans’, sans-serif;
-}
-
-/* ════ BOTTOM NAV ════ */
-.bottom-nav {
-position: fixed; bottom: 0; left: 0; right: 0; z-index: 70;
-background: rgba(237,224,206,0.95);
-backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-border-top: 1px solid var(–cream-deep);
-display: flex; justify-content: space-around;
-padding: 8px 0 calc(8px + var(–safe-bottom));
-}
-.nav-item {
-display: flex; flex-direction: column;
-align-items: center; gap: 3px; padding: 4px 18px; cursor: pointer;
-}
-.nav-icon { font-family: ‘Cormorant’, serif; font-size: 18px; color: var(–ink3); }
-.nav-text  { font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(–ink3); font-family: ‘DM Sans’, sans-serif; }
-.nav-item.active .nav-icon,
-.nav-item.active .nav-text { color: var(–wood); }
-
-/* ══════════════════════════
-LIST PAGE
-══════════════════════════ */
-
-/* — Intro (compact) — */
-.intro {
-padding: 22px 22px 24px;       /* ← 줄인 여백 */
-border-bottom: 1px solid var(–cream-deep);
-}
-.intro-eyebrow {
-font-size: 9px; letter-spacing: 0.28em;
-text-transform: uppercase; color: var(–wood);
-font-family: ‘DM Sans’, sans-serif;
-margin-bottom: 12px;
-display: flex; align-items: center; gap: 10px;
-}
-.intro-eyebrow::after { content: ‘’; flex: 1; height: 1px; background: var(–cream-deep); }
-.intro-headline {
-font-family: ‘Cormorant’, serif;
-font-size: clamp(32px, 9.5vw, 48px);
-font-weight: 300; line-height: 1.08;
-letter-spacing: -0.01em; color: var(–ink);
-margin-bottom: 14px;
-}
-.intro-headline em { font-style: italic; color: var(–wood); }
-.intro-copy {
-font-family: ‘Noto Serif KR’, serif;
-font-size: 11.5px; font-weight: 300;
-line-height: 2.0; color: var(–ink2);
-padding-left: 14px;
-border-left: 2px solid var(–wood-light);
-}
-
-/* — Category filter tabs — */
-.cat-tabs {
-display: flex; gap: 0;
-padding: 0 22px;
-overflow-x: auto; scrollbar-width: none;
-border-bottom: 1px solid var(–cream-deep);
-position: sticky; top: 50px; z-index: 50;  /* stick below header */
-background: rgba(237,224,206,0.96);
-backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-}
-.cat-tabs::-webkit-scrollbar { display: none; }
-.cat-tab {
-flex-shrink: 0;
-padding: 12px 14px 11px;
-font-size: 10px; letter-spacing: 0.14em;
-text-transform: uppercase; color: var(–ink3);
-font-family: ‘DM Sans’, sans-serif;
-cursor: pointer;
-border-bottom: 2px solid transparent;
-transition: color 0.2s, border-color 0.2s;
-white-space: nowrap;
-margin-bottom: -1px;
-}
-.cat-tab.active { color: var(–wood); border-bottom-color: var(–wood); }
-
-/* — Category group — */
-.cat-group { display: none; }
-.cat-group.visible { display: block; }
-
-/* — Category header inside group — */
-.cat-group-header {
-padding: 28px 22px 10px;
-display: flex; align-items: baseline; gap: 10px;
-}
-.cat-group-name {
-font-family: ‘Cormorant’, serif;
-font-size: 26px; font-weight: 300; letter-spacing: -0.01em; color: var(–ink);
-}
-.cat-group-name em { font-style: italic; color: var(–wood); }
-.cat-group-count {
-font-size: 9px; letter-spacing: 0.18em;
-color: var(–ink3); font-family: ‘DM Sans’, sans-serif;
-text-transform: uppercase;
-}
-.cat-group-rule { flex: 1; height: 1px; background: var(–cream-deep); }
-
-/* — Cards inside category — */
-.cat-cards {
-padding: 6px 22px 36px;
-display: flex; flex-direction: column; gap: 36px;
-}
-
-/* Magazine card */
-.m-card {
-cursor: pointer;
-opacity: 0; transform: translateY(18px);
-transition: opacity 0.45s ease, transform 0.45s ease;
-}
-.m-card.visible { opacity: 1; transform: translateY(0); }
-
-.card-meta {
-display: flex; align-items: center;
-justify-content: space-between; margin-bottom: 11px;
-}
-.card-scene {
-font-size: 9px; letter-spacing: 0.2em;
-text-transform: uppercase; color: var(–wood);
-font-family: ‘DM Sans’, sans-serif;
-}
-.card-date { font-size: 9px; color: var(–ink3); font-family: ‘DM Sans’, sans-serif; }
-
-.card-img-wrap {
-position: relative; overflow: hidden;
-border-radius: 2px; background: var(–cream-mid); margin-bottom: 16px;
-}
-/* Alternate aspect ratios within each category */
-.m-card:nth-child(odd)  .card-img-wrap { aspect-ratio: 4/3; }
-.m-card:nth-child(even) .card-img-wrap { aspect-ratio: 3/4; }
-
-.card-img {
-width: 100%; height: 100%; object-fit: cover; display: block;
-transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
-pointer-events: none; user-select: none;
-}
-.m-card:active .card-img { transform: scale(1.03); }
-.card-img-wrap::after {
-content: ‘’; position: absolute; inset: 0;
-background: linear-gradient(160deg, rgba(61,43,26,0) 50%, rgba(61,43,26,0.18) 100%);
-pointer-events: none;
-}
-.card-badge {
-position: absolute; bottom: 12px; right: 12px;
-font-size: 8.5px; letter-spacing: 0.15em; text-transform: uppercase;
-padding: 4px 9px; border-radius: 2px;
-font-family: ‘DM Sans’, sans-serif;
-backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-}
-.card-badge.done { background: var(–wood); color: var(–cream); }
-.card-badge.wip  { background: rgba(237,224,206,0.9); color: var(–ink2); }
-
-.card-title {
-font-family: ‘Cormorant’, serif;
-font-size: clamp(22px, 6vw, 28px);
-font-weight: 400; line-height: 1.15; color: var(–ink);
-letter-spacing: -0.01em; margin-bottom: 6px;
-}
-.card-title em { font-style: italic; color: var(–wood); }
-.card-desc {
-font-family: ‘Noto Serif KR’, serif;
-font-size: 11px; font-weight: 300;
-color: var(–ink2); line-height: 1.9; margin-bottom: 14px;
-}
-.card-footer {
+/* ══ NAV ══ */
+nav {
+position: fixed; top: 0; left: 0; right: 0; z-index: 200;
 display: flex; align-items: center; justify-content: space-between;
-padding-top: 12px; border-top: 1px solid var(–cream-deep);
+padding: 24px 56px;
+background: rgba(247,244,239,0.92); backdrop-filter: blur(16px);
+border-bottom: 1px solid rgba(168,196,190,0.2);
+transition: padding 0.4s ease;
 }
-.card-tags { display: flex; gap: 5px; flex-wrap: wrap; }
-.tag {
-font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase;
-color: var(–ink2); background: var(–cream-mid);
-padding: 3px 8px; border-radius: 2px; font-family: ‘DM Sans’, sans-serif;
+.nav-logo {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 20px; font-weight: 400; letter-spacing: 0.06em;
+color: var(–charcoal); cursor: pointer; user-select: none;
 }
-.card-arrow {
-font-family: ‘Cormorant’, serif; font-size: 20px; color: var(–wood);
-transition: transform 0.2s; flex-shrink: 0;
+.nav-logo span { color: var(–teal-dark); }
+.nav-right { display: flex; align-items: center; gap: 28px; }
+.nav-back-btn {
+font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 0.18em;
+text-transform: uppercase; color: var(–stone); background: none; border: none;
+cursor: pointer; display: flex; align-items: center; gap: 8px;
+opacity: 0; pointer-events: none; transition: opacity 0.3s, color 0.3s;
 }
-.m-card:active .card-arrow { transform: translateX(5px); }
+.nav-back-btn.show { opacity: 1; pointer-events: all; }
+.nav-back-btn:hover { color: var(–charcoal); }
+.nav-scene-tag {
+font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 0.18em;
+text-transform: uppercase; color: var(–accent-dark);
+padding: 5px 14px; border: 1px solid var(–accent-dark); border-radius: 40px;
+opacity: 0; transition: opacity 0.3s, color 0.3s, border-color 0.3s;
+}
+.nav-scene-tag.show { opacity: 1; }
 
-/* All tab — show all groups stacked */
-#group-all .cat-group { display: block; }
+/* ══ PAGES ══ */
+.page { display: none; }
+.page.active { display: block; animation: pageIn 0.45s ease both; }
 
-/* ══════════════════════════
-DETAIL PAGE (same as before)
-══════════════════════════ */
-.detail-content { padding-bottom: 110px; }
-.d-hero { padding: 28px 22px 28px; border-bottom: 1px solid var(–cream-deep); }
-.d-scene-tag {
-display: inline-flex; align-items: center; gap: 8px;
-font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase;
-color: var(–wood); font-family: ‘DM Sans’, sans-serif; margin-bottom: 16px;
-}
-.d-scene-tag::before { content: ‘’; width: 18px; height: 1px; background: var(–wood); }
-.d-title {
-font-family: ‘Cormorant’, serif;
-font-size: clamp(30px, 9vw, 44px);
-font-weight: 300; line-height: 1.1; color: var(–ink);
-letter-spacing: -0.01em; margin-bottom: 5px;
-}
-.d-title em { font-style: italic; color: var(–wood); }
-.d-subtitle {
-font-family: ‘Cormorant’, serif;
-font-size: 15px; font-weight: 300; font-style: italic;
-color: var(–ink2); margin-bottom: 20px;
-}
-.d-copy-block {
-padding: 16px 16px 16px 18px;
-background: var(–cream-mid);
-border-left: 2px solid var(–wood);
-border-radius: 0 2px 2px 0; margin-bottom: 22px;
-}
-.d-copy {
-font-family: ‘Noto Serif KR’, serif;
-font-size: 12.5px; font-weight: 300; line-height: 2.0; color: var(–ink);
-}
-.d-copy .hl { color: var(–wood); font-weight: 400; }
-.d-role-label {
-font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
-color: var(–ink3); font-family: ‘DM Sans’, sans-serif; margin-bottom: 4px;
-}
-.d-role-name {
-font-family: ‘Cormorant’, serif; font-size: 15px; font-weight: 400;
-color: var(–ink); display: block;
-}
-.d-role-name.em { font-style: italic; color: var(–wood); }
-
-.d-section { padding: 30px 0 0; }
-.d-sec-header {
-display: flex; align-items: center; gap: 12px; padding: 0 22px 16px;
-}
-.d-sec-num {
-font-size: 9px; letter-spacing: 0.22em; color: var(–wood);
-text-transform: uppercase; font-family: ‘DM Sans’, sans-serif; white-space: nowrap;
-}
-.d-sec-title {
-font-family: ‘Cormorant’, serif; font-size: 16px;
-font-weight: 400; color: var(–ink); letter-spacing: 0.02em;
-}
-.d-sec-rule { flex: 1; height: 1px; background: var(–cream-deep); }
-
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
-.img-block { position: relative; overflow: hidden; background: var(–cream-mid); }
-.img-block img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
-.img-block.square    { aspect-ratio: 1/1; }
-.img-block.landscape { aspect-ratio: 4/3; }
-.img-block.portrait  { aspect-ratio: 3/4; }
-.img-block.wide      { aspect-ratio: 16/9; }
-.img-lbl {
-position: absolute; top: 10px; left: 10px;
-background: rgba(237,224,206,0.9); font-size: 8.5px; letter-spacing: 0.15em;
-text-transform: uppercase; color: var(–ink); padding: 3px 8px; border-radius: 1px;
-font-family: ‘DM Sans’, sans-serif; backdrop-filter: blur(4px);
-}
-.img-lbl.after { background: var(–wood); color: var(–cream); }
-
-.full-bleed { width: 100%; position: relative; overflow: hidden; background: var(–cream-mid); }
-.full-bleed img { width: 100%; display: block; pointer-events: none; }
-
-.after-caption { padding: 12px 22px 0; }
-.after-caption p {
-font-family: ‘Noto Serif KR’, serif; font-size: 11px; font-style: italic;
-color: var(–ink2); line-height: 1.9;
-}
-.blueprint-note { padding: 12px 22px 0; }
-.blueprint-note p {
-font-family: ‘Noto Serif KR’, serif; font-size: 11px; font-weight: 300;
-color: var(–ink2); line-height: 1.9; font-style: italic;
-}
-.blueprint-note strong { color: var(–ink); font-style: normal; font-weight: 400; }
-
-.palette-wrap { padding: 0 22px; }
-.color-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-.chip { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-.chip-swatch { width: 48px; height: 48px; border-radius: 2px; border: 1px solid rgba(61,43,26,0.08); }
-.chip-hex  { font-size: 8px; letter-spacing: 0.1em; color: var(–ink2); font-family: ‘DM Sans’, sans-serif; }
-.chip-name { font-size: 8px; color: var(–ink3); font-family: ‘DM Sans’, sans-serif; text-align: center; max-width: 50px; }
-.material-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
-.material-row::-webkit-scrollbar { display: none; }
-.mat-chip { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-.mat-swatch { width: 54px; height: 38px; border-radius: 2px; overflow: hidden; background: var(–cream-mid); border: 1px solid rgba(61,43,26,0.06); }
-.mat-swatch img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.mat-label { font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: var(–ink3); font-family: ‘DM Sans’, sans-serif; }
-
-.directors-note {
-margin: 30px 22px 0; background: var(–ink); border-radius: 2px; padding: 28px 22px;
-position: relative; overflow: hidden;
-}
-.directors-note::before {
-content: ‘\201C’; position: absolute; top: -8px; left: 12px;
-font-family: ‘Cormorant’, serif; font-size: 100px;
-color: rgba(237,224,206,0.05); line-height: 1; pointer-events: none;
-}
-.note-label {
-font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase;
-color: var(–wood); font-family: ‘DM Sans’, sans-serif; margin-bottom: 14px; display: block;
-}
-.note-text {
-font-family: ‘Noto Serif KR’, serif; font-size: 12.5px;
-font-weight: 300; line-height: 2.1; color: rgba(237,224,206,0.85);
-}
-.note-text .hl { color: var(–wood-light); font-weight: 400; }
-.note-sign {
-margin-top: 18px; font-family: ‘Cormorant’, serif; font-size: 13px;
-font-style: italic; color: rgba(237,224,206,0.3); text-align: right;
+@keyframes pageIn {
+from { opacity: 0; transform: translateY(16px); }
+to   { opacity: 1; transform: translateY(0); }
 }
 
-/* fade */
-.fu { opacity: 0; transform: translateY(14px); transition: opacity 0.45s ease, transform 0.45s ease; }
-.fu.vis { opacity: 1; transform: translateY(0); }
+/* ══════════════════
+MAIN PAGE
+══════════════════ */
+#main-page { padding-top: 80px; }
 
-/* ── Impact Metrics ── */
-.impact-block {
-margin: 0 22px;
-padding: 18px 20px;
-background: var(–cream-mid);
-border-left: 2px solid var(–wood);
-border-radius: 0 2px 2px 0;
+.hero {
+min-height: calc(100vh - 80px);
+display: grid; grid-template-columns: 1fr 1fr;
 }
-.impact-label {
-font-size: 9px; letter-spacing: 0.22em;
-text-transform: uppercase; color: var(–wood);
-font-family: ‘DM Sans’, sans-serif;
-margin-bottom: 12px; display: block;
+.hero-left {
+padding: 80px 48px 80px 56px;
+display: flex; flex-direction: column; justify-content: center;
 }
-.impact-list {
-list-style: none; display: flex; flex-direction: column; gap: 10px;
+.hero-eyebrow {
+font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 0.26em;
+text-transform: uppercase; color: var(–teal-dark); margin-bottom: 32px;
+display: flex; align-items: center; gap: 12px;
+animation: fadeUp 0.8s ease 0.1s both;
 }
-.impact-item {
-display: flex; align-items: flex-start; gap: 10px;
+.hero-eyebrow::before { content: ‘’; width: 32px; height: 1px; background: var(–teal-dark); }
+.hero-title {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: clamp(52px,6vw,90px); font-weight: 300; line-height: 1.0;
+color: var(–charcoal); margin-bottom: 36px;
+animation: fadeUp 0.9s ease 0.25s both;
 }
-.impact-dot {
-width: 5px; height: 5px; border-radius: 50%;
-background: var(–wood); flex-shrink: 0; margin-top: 6px;
+.hero-title em { font-style: italic; color: var(–teal-dark); }
+.hero-desc {
+font-size: 14px; line-height: 1.9; color: var(–stone);
+max-width: 360px; margin-bottom: 56px;
+animation: fadeUp 0.9s ease 0.4s both;
 }
-.impact-text {
-font-family: ‘Noto Serif KR’, serif;
-font-size: 12px; font-weight: 300;
-color: var(–ink); line-height: 1.8;
+.hero-cta {
+display: inline-flex; align-items: center; gap: 16px;
+font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+color: var(–charcoal); background: none; border: none; border-bottom: 1px solid var(–charcoal);
+padding-bottom: 8px; cursor: pointer; transition: all 0.3s; width: fit-content;
+animation: fadeUp 0.9s ease 0.55s both;
 }
-.impact-text strong {
-color: var(–wood); font-weight: 400;
-}
+.hero-cta:hover { color: var(–teal-dark); border-color: var(–teal-dark); gap: 24px; }
 
-/* ── POPUP ── */
-.popup-backdrop {
-position: fixed; inset: 0; z-index: 200;
-background: rgba(61,43,26,0);
-pointer-events: none;
-transition: background 0.28s ease;
+.hero-right { background: var(–linen); position: relative; overflow: hidden; animation: fadeIn 1.2s ease 0.3s both; }
+.hero-visual {
+width: 100%; height: 100%;
+background: linear-gradient(160deg, var(–teal-light) 0%, var(–linen) 50%, var(–sand) 100%);
+display: flex; align-items: center; justify-content: center;
 }
-.popup-backdrop.open {
-background: rgba(61,43,26,0.35);
-pointer-events: all;
+.hero-mockup {
+width: 66%; aspect-ratio: 3/4; background: var(–cream); border-radius: 2px;
+box-shadow: 0 40px 80px rgba(30,30,28,0.14); overflow: hidden; display: flex; flex-direction: column;
 }
-.popup-box {
-position: fixed; z-index: 201;
-bottom: 80px;
-left: 50%; transform: translateX(-50%) translateY(12px);
-width: calc(100% - 44px); max-width: 340px;
-background: var(–cream);
-border: 1px solid var(–cream-deep);
-border-radius: 4px;
-padding: 26px 24px 22px;
-box-shadow: 0 12px 40px rgba(61,43,26,0.18);
-opacity: 0; pointer-events: none;
-transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.32,0.72,0,1);
+.mockup-top { height: 44%; background: linear-gradient(135deg, var(–teal-light) 0%, var(–teal) 100%); }
+.mockup-mid { padding: 20px 22px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.mock-line { height: 8px; border-radius: 4px; background: var(–linen); }
+.mock-line:nth-child(2) { width: 70%; }
+.mock-line:nth-child(3) { width: 50%; background: var(–teal-light); }
+.mock-chips { display: flex; gap: 6px; margin-top: 8px; }
+.mock-chip { width: 28px; height: 28px; border-radius: 2px; }
+
+.intro-bar {
+background: var(–dark-block); padding: 48px 56px;
+display: flex; align-items: center; justify-content: space-between;
 }
-.popup-box.open {
-opacity: 1; pointer-events: all;
-transform: translateX(-50%) translateY(0);
+.intro-text { font-family: ‘Cormorant Garamond’, serif; font-size: 28px; font-weight: 300; color: var(–cream); line-height: 1.5; }
+.intro-text em { color: var(–teal-light); font-style: italic; }
+.intro-sub { font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(–stone); text-align: right; line-height: 2; }
+
+.categories-section { padding: 80px 56px 120px; }
+.cat-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 56px; }
+.cat-label-text { font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: var(–teal-dark); margin-bottom: 16px; }
+.cat-title { font-family: ‘Cormorant Garamond’, serif; font-size: 52px; font-weight: 300; line-height: 1.05; color: var(–charcoal); }
+.cat-count { font-family: ‘DM Mono’, monospace; font-size: 11px; letter-spacing: 0.16em; color: var(–stone); }
+
+.cat-grid { display: grid; grid-template-columns: repeat(12,1fr); gap: 12px; }
+.cat-card:nth-child(1) { grid-column: 1/8; }
+.cat-card:nth-child(2) { grid-column: 8/13; }
+.cat-card:nth-child(3) { grid-column: 1/5; }
+.cat-card:nth-child(4) { grid-column: 5/9; }
+.cat-card:nth-child(5) { grid-column: 9/13; }
+
+.cat-card { position: relative; overflow: hidden; border-radius: 2px; cursor: pointer; }
+.cat-card-inner { width: 100%; position: relative; overflow: hidden; }
+.cat-card:nth-child(1) .cat-card-inner,
+.cat-card:nth-child(2) .cat-card-inner { height: 420px; }
+.cat-card:nth-child(3) .cat-card-inner,
+.cat-card:nth-child(4) .cat-card-inner,
+.cat-card:nth-child(5) .cat-card-inner { height: 280px; }
+.cat-bg {
+position: absolute; inset: 0; background-size: cover; background-position: center;
+transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
 }
-.popup-close {
-position: absolute; top: 12px; right: 14px;
-background: none; border: none; cursor: pointer;
-font-size: 14px; color: var(–ink3); line-height: 1;
-padding: 4px;
+.cat-card:hover .cat-bg { transform: scale(1.04); }
+.cat-card:nth-child(1) .cat-bg { background: linear-gradient(145deg,#C8DDD9 0%,#A8C4BE 40%,#8AAEA7 100%); }
+.cat-card:nth-child(2) .cat-bg { background: linear-gradient(145deg,#C4D4DC 0%,#A4B8C8 40%,#809EB0 100%); }
+.cat-card:nth-child(3) .cat-bg { background: linear-gradient(145deg,#DCD4E8 0%,#C4B8D4 40%,#A094B8 100%); }
+.cat-card:nth-child(4) .cat-bg { background: linear-gradient(145deg,#C4D8DC 0%,#A4C4C8 40%,#7AAAB0 100%); }
+.cat-card:nth-child(5) .cat-bg { background: linear-gradient(145deg,#D8CCBC 0%,#C4B49C 40%,#A8927C 100%); }
+.cat-overlay { position: absolute; inset: 0; background: linear-gradient(to top,rgba(30,30,28,0.65) 0%,transparent 55%); transition: opacity 0.4s; }
+.cat-card:hover .cat-overlay { opacity: 0.85; }
+.cat-info { position: absolute; bottom:0; left:0; right:0; padding: 28px 28px 24px; display: flex; align-items: flex-end; justify-content: space-between; }
+.cat-num { font-family: ‘DM Mono’, monospace; font-size: 9px; letter-spacing: 0.22em; color: rgba(255,255,255,0.5); margin-bottom: 6px; display: block; }
+.cat-name { font-family: ‘Cormorant Garamond’, serif; font-size: 28px; font-weight: 300; color: #fff; line-height: 1.1; display: block; }
+.cat-card:nth-child(1) .cat-name { font-size: 36px; }
+.cat-arrow { width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); font-size: 16px; transform: translateY(8px); opacity: 0; transition: all 0.3s; }
+.cat-card:hover .cat-arrow { transform: translateY(0); opacity: 1; background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.6); }
+
+/* ══════════════════
+SPACE PAGE
+══════════════════ */
+#space-page { padding-top: 72px; }
+
+/* hero scene */
+.sp-hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+.sp-hero-left { padding: 80px 48px 80px 56px; display: flex; flex-direction: column; justify-content: center; }
+.sp-scene-tag {
+display: inline-flex; align-items: center; gap: 10px;
+padding: 6px 16px; background: var(–accent-light); border-radius: 40px;
+font-family: ‘DM Mono’, monospace; font-size: 9px; letter-spacing: 0.22em;
+text-transform: uppercase; color: var(–accent-dark);
+margin-bottom: 28px; width: fit-content;
+transition: background 0.4s, color 0.4s;
 }
-.popup-eyebrow {
-font-size: 8.5px; letter-spacing: 0.24em;
-text-transform: uppercase; color: var(–wood);
-font-family: ‘DM Sans’, sans-serif; margin-bottom: 10px; display: block;
-}
-.popup-title {
-font-family: ‘Cormorant’, serif;
-font-size: 22px; font-weight: 400; color: var(–ink);
-margin-bottom: 14px; line-height: 1.1;
-}
-.popup-title em { font-style: italic; color: var(–wood); }
-.popup-body {
-font-family: ‘Noto Serif KR’, serif;
-font-size: 11.5px; font-weight: 300;
-color: var(–ink2); line-height: 1.9;
-}
-.popup-divider {
-height: 1px; background: var(–cream-deep); margin: 16px 0;
-}
-.popup-contact-row {
-display: flex; flex-direction: column; gap: 8px;
-}
-.popup-contact-item {
-display: flex; align-items: center; gap: 10px;
-}
-.popup-contact-label {
-font-size: 8.5px; letter-spacing: 0.16em; text-transform: uppercase;
-color: var(–ink3); font-family: ‘DM Sans’, sans-serif; width: 52px; flex-shrink: 0;
-}
-.popup-contact-value {
-font-family: ‘DM Sans’, sans-serif;
-font-size: 12px; color: var(–ink); letter-spacing: 0.02em;
+.sp-title { font-family: ‘Cormorant Garamond’, serif; font-size: clamp(44px,5.5vw,80px); font-weight: 300; line-height: 1.05; color: var(–charcoal); margin-bottom: 28px; }
+.sp-title em { font-style: italic; color: var(–accent-dark); transition: color 0.4s; }
+.sp-copy { background: var(–charcoal); color: var(–accent-light); padding: 20px 24px; font-size: 14px; line-height: 1.85; border-left: 3px solid var(–accent-dark); margin-bottom: 28px; transition: color 0.4s, border-color 0.4s; }
+.sp-role { font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 0.18em; color: var(–stone); text-transform: uppercase; }
+.sp-hero-right { position: relative; overflow: hidden; }
+.sp-hero-bg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: background 0.5s; }
+.sp-placeholder { width: 65%; aspect-ratio: 4/3; background: rgba(255,255,255,0.4); backdrop-filter: blur(8px); border-radius: 2px; border: 1px solid rgba(255,255,255,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+.sp-placeholder svg { opacity: 0.4; }
+.sp-placeholder span { font-family: ‘DM Mono’, monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(–stone); }
+
+/* common sec */
+.sp-sec { padding: 100px 56px; }
+.sp-sec-label { font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(–accent-dark); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; transition: color 0.4s; }
+.sp-sec-label::after { content: ‘’; max-width: 48px; flex: 1; height: 1px; background: var(–accent-dark); opacity: 0.4; transition: background 0.4s; }
+.sp-sec-title { font-family: ‘Cormorant Garamond’, serif; font-size: clamp(34px,4vw,52px); font-weight: 300; line-height: 1.1; color: var(–charcoal); margin-bottom: 52px; }
+
+/* before */
+.sp-before { background: var(–cream); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.img-block { width: 100%; aspect-ratio: 4/3; border-radius: 2px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+.img-block-label { font-family: ‘DM Mono’, monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(–stone); opacity: 0.7; }
+.img-caption { font-size: 12px; color: var(–stone); line-height: 1.75; }
+
+/* blueprint */
+.sp-blueprint { background: var(–dark-block); }
+.sp-blueprint .sp-sec-label { color: var(–teal-light); }
+.sp-blueprint .sp-sec-label::after { background: var(–teal-light); }
+.sp-blueprint .sp-sec-title { color: var(–cream); }
+.bp-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 48px; align-items: start; }
+.bp-visual { aspect-ratio: 4/3; border: 1px solid rgba(168,196,190,0.15); border-radius: 2px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgba(168,196,190,0.05); }
+.bp-grid-bg { position: absolute; inset: 0; opacity: 0.1; background-image: linear-gradient(var(–teal-light) 1px,transparent 1px),linear-gradient(90deg,var(–teal-light) 1px,transparent 1px); background-size: 40px 40px; }
+.bp-vis-label { font-family: ‘DM Mono’, monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(200,221,217,0.45); z-index: 1; }
+.bp-principle { background: rgba(168,196,190,0.07); border-left: 2px solid var(–teal-dark); padding: 18px 22px; margin-bottom: 22px; font-size: 13px; line-height: 1.85; color: rgba(247,244,239,0.7); }
+.bp-principle strong { display: block; color: var(–teal-light); font-family: ‘DM Mono’, monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 400; margin-bottom: 10px; }
+.bp-row { display: flex; gap: 14px; padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.bp-num { font-family: ‘DM Mono’, monospace; font-size: 10px; color: var(–teal-dark); min-width: 22px; padding-top: 2px; }
+.bp-text { font-size: 13px; line-height: 1.7; color: rgba(247,244,239,0.6); }
+
+/* after */
+.sp-after { padding: 0; background: var(–linen); }
+.after-full { width: 100%; aspect-ratio: 16/7; position: relative; overflow: hidden; display: flex; align-items: flex-end; transition: background 0.5s; }
+.best-tag { position: absolute; top: 40px; left: 56px; background: var(–charcoal); color: var(–teal-light); padding: 8px 20px; font-family: ‘DM Mono’, monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; }
+.after-bottom { padding: 44px 56px; display: flex; align-items: center; justify-content: space-between; }
+.after-h { font-family: ‘Cormorant Garamond’, serif; font-size: 38px; font-weight: 300; color: var(–charcoal); }
+.after-meta { font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 0.18em; color: var(–stone); text-transform: uppercase; text-align: right; line-height: 1.9; }
+
+/* organizing detail */
+.sp-detail { background: var(–warm-white); }
+.detail-img { width: 100%; aspect-ratio: 3/2; border-radius: 2px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.detail-line { width: 32px; height: 1px; background: var(–accent-dark); opacity: 0.4; margin-bottom: 12px; transition: background 0.4s; }
+.detail-cap { font-size: 12px; line-height: 1.8; color: var(–stone); font-style: italic; }
+
+/* texture */
+.sp-texture { background: var(–cream); }
+.tex-grid { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 16px; }
+.tex-main { width: 100%; aspect-ratio: 1; border-radius: 2px; }
+.tex-side { display: flex; flex-direction: column; gap: 16px; }
+.tex-sm { width: 100%; aspect-ratio: 1; border-radius: 2px; }
+
+/* palette */
+.sp-palette { background: var(–linen); }
+.chips { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 40px; }
+.chip { cursor: default; transition: transform 0.3s; }
+.chip:hover { transform: translateY(-4px); }
+.chip-sw { width: 100%; aspect-ratio: 2/3; border-radius: 2px; margin-bottom: 10px; transition: box-shadow 0.3s; }
+.chip:hover .chip-sw { box-shadow: 0 12px 28px rgba(30,30,28,0.14); }
+.chip-name { display: block; font-family: ‘DM Mono’, monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(–charcoal); margin-bottom: 2px; }
+.chip-hex { font-family: ‘DM Mono’, monospace; font-size: 9px; letter-spacing: 0.1em; color: var(–stone); }
+.mats { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+.mat-item { display: flex; flex-direction: column; gap: 10px; }
+.mat-sw { width: 100%; aspect-ratio: 3/2; border-radius: 2px; }
+.mat-label { font-family: ‘DM Mono’, monospace; font-size: 9px; letter-spacing: 0.18em; color: var(–stone); text-transform: uppercase; }
+
+/* note */
+.sp-note { background: var(–dark-block); padding: 120px 56px; position: relative; overflow: hidden; }
+.sp-note::before { content: ‘”’; position: absolute; top: 30px; right: 80px; font-family: ‘Cormorant Garamond’, serif; font-size: 320px; font-weight: 300; color: rgba(168,196,190,0.05); line-height: 1; pointer-events: none; }
+.note-inner { max-width: 720px; }
+.note-label { font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: var(–teal-light); margin-bottom: 48px; display: flex; align-items: center; gap: 12px; }
+.note-label::before { content: ‘’; width: 40px; height: 1px; background: var(–teal-dark); }
+.note-text { font-family: ‘Cormorant Garamond’, serif; font-size: clamp(22px,3vw,32px); font-weight: 300; line-height: 1.65; color: rgba(247,244,239,0.88); margin-bottom: 48px; }
+.note-text em { color: var(–teal-light); font-style: italic; }
+.note-sign { font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 0.2em; color: var(–teal-dark); text-transform: uppercase; }
+
+/* footer */
+footer { background: var(–charcoal); padding: 52px 56px; display: flex; align-items: center; justify-content: space-between; }
+.footer-logo { font-family: ‘Cormorant Garamond’, serif; font-size: 22px; font-weight: 300; color: var(–cream); letter-spacing: 0.05em; }
+.footer-logo span { color: var(–teal-light); }
+.footer-info { font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 0.16em; color: rgba(255,255,255,0.3); text-transform: uppercase; text-align: right; line-height: 1.9; }
+
+/* reveal */
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);} }
+@keyframes fadeIn { from{opacity:0;}to{opacity:1;} }
+
+/* responsive */
+@media(max-width:960px){
+nav{padding:18px 24px;}
+.hero{grid-template-columns:1fr;}
+.hero-right{display:none;}
+.hero-left{padding:100px 24px 60px;}
+.intro-bar{flex-direction:column;align-items:flex-start;gap:16px;padding:40px 24px;}
+.intro-sub{text-align:left;}
+.categories-section{padding:60px 24px 80px;}
+.cat-grid{display:flex;flex-direction:column;}
+.cat-card:nth-child(n) .cat-card-inner{height:200px;}
+.cat-card:nth-child(1) .cat-name{font-size:28px;}
+.sp-hero{grid-template-columns:1fr;}
+.sp-hero-right{display:none;}
+.sp-hero-left{padding:100px 24px 56px;}
+.sp-sec{padding:72px 24px;}
+.two-col{grid-template-columns:1fr;}
+.bp-grid{grid-template-columns:1fr;}
+.tex-grid{grid-template-columns:1fr;}
+.chips{grid-template-columns:repeat(3,1fr);}
+.mats{grid-template-columns:repeat(2,1fr);}
+.after-bottom{flex-direction:column;align-items:flex-start;gap:14px;padding:36px 24px;}
+.sp-note{padding:80px 24px;}
+footer{padding:40px 24px;flex-direction:column;gap:20px;}
+.footer-info{text-align:left;}
 }
 </style>
 
 </head>
 <body>
-<div id="app">
 
-<!-- ══ LIST PAGE ══ -->
-
-<div class="page" id="page-list">
-  <header class="top-bar">
-    <div class="top-bar-inner">
-      <span class="logo">SC<em>ene</em></span>
-      <div class="header-links">
-        <span class="header-link" data-popup="about">About</span>
-        <span class="header-link" data-popup="contact">Contact</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- Intro -->
-
-  <div class="intro fu">
-    <p class="intro-eyebrow">Space Curation Studio</p>
-    <h1 class="intro-headline">당신의 공간을<br><em>편집</em>합니다</h1>
-    <p class="intro-copy">디지털 시네마틱의 정교함으로 일상의 시각적 노이즈를 제거하고, 공간을 가장 완벽한 세트장으로.</p>
+<nav id="main-nav">
+  <span class="nav-logo" onclick="goHome()">Space<span>&</span>Order</span>
+  <div class="nav-right">
+    <button class="nav-back-btn" id="nav-back" onclick="goHome()">← 전체 공간</button>
+    <span class="nav-scene-tag" id="nav-tag"></span>
   </div>
-
-  <!-- Category Tabs -->
-
-  <div class="cat-tabs" id="cat-tabs">
-    <span class="cat-tab active" data-cat="all">전체</span>
-    <span class="cat-tab" data-cat="living">거실</span>
-    <span class="cat-tab" data-cat="bedroom">침실 · 방</span>
-    <span class="cat-tab" data-cat="kitchen">주방</span>
-    <span class="cat-tab" data-cat="dressroom">드레스룸</span>
-  </div>
-
-  <!-- Groups container -->
-
-  <div id="groups-container"></div>
-</div>
-
-<!-- ══ DETAIL PAGE ══ -->
-
-<div class="page" id="page-detail">
-  <header class="top-bar">
-    <div class="top-bar-inner">
-      <button class="back-btn" id="back-btn"><span>←</span> Back</button>
-      <span class="detail-nav-label" id="d-nav-label"></span>
-    </div>
-  </header>
-  <div class="detail-content" id="detail-content"></div>
-</div>
-
-</div><!-- #app -->
-
-<!-- POPUPS -->
-
-<div class="popup-backdrop" id="popup-backdrop"></div>
-
-<!-- Work popup -->
-
-<div class="popup-box" id="popup-work">
-  <button class="popup-close" onclick="closePopup()">✕</button>
-  <span class="popup-eyebrow">Portfolio</span>
-  <h3 class="popup-title">Selected <em>Works</em></h3>
-  <p class="popup-body">거실 · 침실 · 주방 · 드레스룸<br>공간별 큐레이션 프로젝트를 확인하세요.<br>카테고리 탭에서 원하는 공간을 선택할 수 있어요.</p>
-</div>
-
-<!-- About popup -->
-
-<div class="popup-box" id="popup-about">
-  <button class="popup-close" onclick="closePopup()">✕</button>
-  <span class="popup-eyebrow">About</span>
-  <h3 class="popup-title">Space <em>Curator</em></h3>
-  <p class="popup-body">디지털 시네마틱의 정교함으로 일상의 시각적 노이즈를 편집합니다.<br><br>AI 설계 시뮬레이션부터 가구 배치, 수납 프로토콜, 컬러 큐레이션까지 — 공간을 가장 완벽한 세트장으로 만드는 작업을 합니다.</p>
-  <div class="popup-divider"></div>
-  <p class="popup-body">Digital Cinematic Director<br>&amp; Space Curator <strong style="color:var(--wood);">YOUR NAME</strong></p>
-</div>
-
-<!-- Contact popup -->
-
-<div class="popup-box" id="popup-contact">
-  <button class="popup-close" onclick="closePopup()">✕</button>
-  <span class="popup-eyebrow">Contact</span>
-  <h3 class="popup-title">Get in <em>Touch</em></h3>
-  <div class="popup-contact-row">
-    <div class="popup-contact-item">
-      <span class="popup-contact-label">Email</span>
-      <span class="popup-contact-value">your@email.com</span>
-    </div>
-    <div class="popup-contact-item">
-      <span class="popup-contact-label">Instagram</span>
-      <span class="popup-contact-value">@yourhandle</span>
-    </div>
-    <div class="popup-contact-item">
-      <span class="popup-contact-label">Kakao</span>
-      <span class="popup-contact-value">yourkakaoid</span>
-    </div>
-  </div>
-</div>
-
-<nav class="bottom-nav">
-  <div class="nav-item active" data-popup="work"><span class="nav-icon">◈</span><span class="nav-text">Work</span></div>
-  <div class="nav-item" data-popup="about"><span class="nav-icon">◎</span><span class="nav-text">About</span></div>
-  <div class="nav-item" data-popup="contact"><span class="nav-icon">✉</span><span class="nav-text">Contact</span></div>
 </nav>
 
-<script>
-/* ─── DATA ─── */
-const CATEGORIES = [
-  { id: "living",    label: "거실",      em: "Living Room" },
-  { id: "bedroom",   label: "침실 · 방", em: "Bedroom" },
-  { id: "kitchen",   label: "주방",      em: "Kitchen" },
-  { id: "dressroom", label: "드레스룸",  em: "Dress Room" },
-];
+<!-- ══════════ MAIN PAGE ══════════ -->
 
-const PROJECTS = [
-  {
-    id: 1, cat: "living",
-    scene: "Scene #01", date: "2025. 03",
-    title: "아파트의", titleEm: "반란",
-    subtitle: "거실의 재해석",
-    desc: "전형적인 한국 아파트 거실을 시네마틱 공간으로 전환한 프로젝트",
-    tags: ["Styling","Organizing","Paint"], status: "done",
-    cover: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85",
-    detail: {
-      mainCopy: `디지털 프레임 안의 <span class="hl">미장센</span>을 당신의 <span class="hl">물리적 공간</span>으로 소환합니다.`,
-      role: "Digital Cinematic Director & Space Curator", roleName: "YOUR NAME",
-      before: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80","https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80"],
-      blueprint: { img: "https://images.unsplash.com/photo-1618220179428-22790b461013?w=900&q=80", note: "실제 작업 전 AI 툴로 생성한 이상적 공간 시안. 조명·가구·컬러 톤을 미리 시뮬레이션해 오차를 최소화했다." },
-      after: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=90",
-      organizing: ["https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=600&q=80","https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80"],
-      texture: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80","https://images.unsplash.com/photo-1617104551722-3b2d51366400?w=600&q=80"],
-      palette: [{hex:"#E8DDD0",name:"Linen"},{hex:"#C4956A",name:"Terra"},{hex:"#8B8070",name:"Stone"},{hex:"#3A3530",name:"Espresso"},{hex:"#F0EAE2",name:"Off White"}],
-      materials: [{label:"Oak Wood",img:"https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=200&q=80"},{label:"Matte Steel",img:null,bg:"#d0ceca"},{label:"Linen",img:"https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=200&q=80"}],
-      metrics: [
-        "이 가구 배치를 통해 <strong>동선을 15% 단축</strong>함.",
-        "정리 시스템 도입 후 물건을 찾는 시간이 <strong>하루 평균 10분 감소</strong>함."
-      ],
-      directorNote: `0.1초의 프레임 오차도 허용하지 않는 <span class="hl">디지털 시네마틱</span>의 정교함으로, 당신의 일상을 방해하는 <span class="hl">시각적 노이즈를 편집</span>했습니다.<br><br>이제 이 공간은 당신의 삶을 담는 가장 완벽한 <span class="hl">세트장</span>이 됩니다.`
-    }
-  },
-  {
-    id: 2, cat: "living",
-    scene: "Scene #05", date: "2024. 10",
-    title: "빛의", titleEm: "각도",
-    subtitle: "조명 재배치 프로젝트",
-    desc: "기존 조명을 교체하지 않고 각도와 색온도만 바꿔 공간의 무드를 완전히 전환",
-    tags: ["Lighting","Styling"], status: "done",
-    cover: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=900&q=85",
-    detail: {
-      mainCopy: `빛의 <span class="hl">각도</span> 하나가 공간의 온도를 바꿉니다.`,
-      role: "Digital Cinematic Director & Space Curator", roleName: "YOUR NAME",
-      before: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80","https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80"],
-      blueprint: { img: "https://images.unsplash.com/photo-1618220179428-22790b461013?w=900&q=80", note: "조명 각도와 색온도 시뮬레이션. 새 조명 구매 없이 배치만으로 무드를 바꾸는 방법을 먼저 검증했다." },
-      after: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=90",
-      organizing: ["https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=600&q=80","https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80"],
-      texture: ["https://images.unsplash.com/photo-1617104551722-3b2d51366400?w=600&q=80","https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80"],
-      palette: [{hex:"#F5EDD8",name:"Candlelight"},{hex:"#D4A96A",name:"Amber"},{hex:"#8C7355",name:"Walnut"},{hex:"#2C2218",name:"Noir"}],
-      materials: [{label:"Brass",img:null,bg:"#c8a84a"},{label:"Rattan",img:"https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=200&q=80"}],
-      metrics: [
-        "이 가구 배치를 통해 <strong>동선을 15% 단축</strong>함.",
-        "정리 시스템 도입 후 물건을 찾는 시간이 <strong>하루 평균 10분 감소</strong>함."
-      ],
-      directorNote: `조명은 공간의 <span class="hl">편집자</span>다.<br><br>무엇을 보이게 하고 무엇을 숨길지, 빛의 방향이 모든 것을 결정한다.`
-    }
-  },
-  {
-    id: 3, cat: "bedroom",
-    scene: "Scene #02", date: "2025. 02",
-    title: "침실의", titleEm: "밀도",
-    subtitle: "수면 공간 큐레이션",
-    desc: "물건을 줄이고 빛을 더해, 가장 조용한 방을 만드는 과정",
-    tags: ["Bedroom","Light","Minimal"], status: "done",
-    cover: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=85",
-    detail: {
-      mainCopy: `수면이라는 <span class="hl">가장 사적인 행위</span>를 위해, 공간의 밀도를 가장 낮은 곳까지 낮춥니다.`,
-      role: "Digital Cinematic Director & Space Curator", roleName: "YOUR NAME",
-      before: ["https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80","https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"],
-      blueprint: { img: "https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=900&q=80", note: "최소한의 가구 배치와 채광 계획을 AI로 사전 검토. 불필요한 시각 요소를 사전에 제거했다." },
-      after: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1200&q=90",
-      organizing: ["https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=600&q=80","https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80"],
-      texture: ["https://images.unsplash.com/photo-1617104551722-3b2d51366400?w=600&q=80","https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80"],
-      palette: [{hex:"#F5F0E8",name:"Chalk"},{hex:"#D4C5A9",name:"Parchment"},{hex:"#9B8E7E",name:"Greige"},{hex:"#5C5248",name:"Umber"}],
-      materials: [{label:"Walnut",img:"https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=200&q=80"},{label:"Cotton",img:"https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=200&q=80"}],
-      metrics: [
-        "이 가구 배치를 통해 <strong>동선을 15% 단축</strong>함.",
-        "정리 시스템 도입 후 물건을 찾는 시간이 <strong>하루 평균 10분 감소</strong>함."
-      ],
-      directorNote: `빛이 가장 조용하게 들어오는 방향을 먼저 찾았다.<br><br>그 빛을 <span class="hl">방해하는 것들을 하나씩 편집</span>했을 때, 침실은 비로소 제 역할을 찾았다.`
-    }
-  },
-  {
-    id: 4, cat: "dressroom",
-    scene: "Scene #07", date: "2025. 02",
-    title: "옷장의", titleEm: "편집",
-    subtitle: "드레스룸 오거나이징",
-    desc: "계절·용도·컬러 기준으로 재분류한 드레스룸. 꺼내기 쉽고 돌아오기 쉬운 수납 설계",
-    tags: ["Dressroom","Organizing","Styling"], status: "done",
-    cover: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=900&q=85",
-    detail: {
-      mainCopy: `옷장은 매일 아침 가장 먼저 마주하는 <span class="hl">첫 번째 공간</span>입니다.`,
-      role: "Digital Cinematic Director & Space Curator", roleName: "YOUR NAME",
-      before: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80","https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80"],
-      blueprint: { img: "https://images.unsplash.com/photo-1618220179428-22790b461013?w=900&q=80", note: "계절·카테고리·컬러 3축 분류 체계를 AI로 시뮬레이션. 꺼내는 빈도를 기준으로 수납 위치를 결정했다." },
-      after: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1200&q=90",
-      organizing: ["https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=600&q=80","https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80"],
-      texture: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80","https://images.unsplash.com/photo-1617104551722-3b2d51366400?w=600&q=80"],
-      palette: [{hex:"#F0EAE2",name:"Linen"},{hex:"#C8B8A2",name:"Almond"},{hex:"#8C7B6A",name:"Driftwood"},{hex:"#3A3028",name:"Sable"}],
-      materials: [{label:"Oak",img:"https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=200&q=80"},{label:"Linen",img:"https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=200&q=80"},{label:"Matte Steel",img:null,bg:"#c8c4be"}],
-      metrics: [
-        "이 가구 배치를 통해 <strong>동선을 15% 단축</strong>함.",
-        "정리 시스템 도입 후 물건을 찾는 시간이 <strong>하루 평균 10분 감소</strong>함."
-      ],
-      directorNote: `드레스룸은 <span class="hl">하루를 여는 공간</span>이다.<br><br>꺼내기 쉽고 돌려놓기 쉬운 구조가 만들어질 때, 공간은 비로소 <span class="hl">리듬</span>을 갖는다.`
-    }
-  },
-  {
-    id: 5, cat: "kitchen",
-    scene: "Scene #03", date: "2025. 01",
-    title: "주방의", titleEm: "문법",
-    subtitle: "키친 오거나이징",
-    desc: "수납 프로토콜을 적용한 주방 재편집. 보이는 것과 숨기는 것의 균형",
-    tags: ["Kitchen","Organizing"], status: "wip",
-    cover: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85",
-    detail: {
-      mainCopy: `보이는 것과 숨기는 것의 <span class="hl">균형</span>이 주방의 문법을 결정합니다.`,
-      role: "Digital Cinematic Director & Space Curator", roleName: "YOUR NAME",
-      before: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80","https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80"],
-      blueprint: { img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=80", note: "수납 동선과 카운터 가시성을 기준으로 구역을 나눴다. 어떤 것을 노출하고 어떤 것을 감출지가 설계의 핵심이었다." },
-      after: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&q=90",
-      organizing: ["https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=600&q=80","https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80"],
-      texture: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80","https://images.unsplash.com/photo-1617104551722-3b2d51366400?w=600&q=80"],
-      palette: [{hex:"#EAEAE6",name:"Frost"},{hex:"#C8BFB0",name:"Sand"},{hex:"#7A7060",name:"Taupe"},{hex:"#2E2A24",name:"Charcoal"}],
-      materials: [{label:"Marble",img:"https://images.unsplash.com/photo-1615529162924-f8605388461d?w=200&q=80"},{label:"Steel",img:null,bg:"#c8c8c4"},{label:"Oak",img:"https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=200&q=80"}],
-      directorNote: `주방은 <span class="hl">가장 많은 물건이 집결</span>하는 공간이다.<br><br>그렇기에 수납 프로토콜이 가장 엄격하게 적용돼야 하는 곳이기도 하다.`
-    }
-  },
-];
+<div id="main-page" class="page active">
 
-/* ─── BUILD GROUPS ─── */
-const container = document.getElementById('groups-container');
-
-CATEGORIES.forEach(cat => {
-  const items = PROJECTS.filter(p => p.cat === cat.id);
-  if (!items.length) return;
-
-  const group = document.createElement('div');
-  group.className = 'cat-group';
-  group.dataset.cat = cat.id;
-
-  group.innerHTML = `
-    <div class="cat-group-header">
-      <h2 class="cat-group-name">${cat.label} <em>/ ${cat.em}</em></h2>
-      <span class="cat-group-count">${items.length} project${items.length>1?'s':''}</span>
-      <span class="cat-group-rule"></span>
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">홈 수납정리 & 스타일링 포트폴리오</p>
+      <h1 class="hero-title">공간을<br><em>정돈하다.</em><br>삶을 디자인하다.</h1>
+      <p class="hero-desc">수납은 물건을 숨기는 것이 아닙니다.<br>동선을 설계하고 오브젝트를 큐레이션하며<br>공간이 스스로 이야기하도록 만드는 일입니다.</p>
+      <button class="hero-cta" onclick="document.getElementById('categories').scrollIntoView({behavior:'smooth'})">프로젝트 보기 <span>→</span></button>
     </div>
-    <div class="cat-cards" id="cards-${cat.id}"></div>
-  `;
-  container.appendChild(group);
-
-  const cardsEl = group.querySelector(`#cards-${cat.id}`);
-  items.forEach(p => {
-    const card = document.createElement('article');
-    card.className = 'm-card';
-    card.innerHTML = `
-      <div class="card-meta">
-        <span class="card-scene">${p.scene}</span>
-        <span class="card-date">${p.date}</span>
-      </div>
-      <div class="card-img-wrap">
-        <img class="card-img" src="${p.cover}" loading="lazy" alt="${p.title}${p.titleEm}">
-        <span class="card-badge ${p.status}">${p.status==='done'?'Completed':'In Progress'}</span>
-      </div>
-      <div>
-        <h3 class="card-title">${p.title} <em>${p.titleEm}</em></h3>
-        <p class="card-desc">${p.desc}</p>
-        <div class="card-footer">
-          <div class="card-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
-          <span class="card-arrow">→</span>
+    <div class="hero-right">
+      <div class="hero-visual">
+        <div class="hero-mockup">
+          <div class="mockup-top"></div>
+          <div class="mockup-mid">
+            <div class="mock-line"></div><div class="mock-line"></div><div class="mock-line"></div>
+            <div class="mock-chips">
+              <div class="mock-chip" style="background:var(--teal-light)"></div>
+              <div class="mock-chip" style="background:var(--sand)"></div>
+              <div class="mock-chip" style="background:var(--charcoal)"></div>
+            </div>
+          </div>
         </div>
       </div>
-    `;
-    card.addEventListener('click', () => openDetail(p));
-    cardsEl.appendChild(card);
-  });
-});
-
-/* show all by default */
-showCat('all');
-
-/* ─── CATEGORY FILTER ─── */
-function showCat(cat) {
-  document.querySelectorAll('.cat-group').forEach(g => {
-    if (cat === 'all') { g.classList.add('visible'); }
-    else { g.classList.toggle('visible', g.dataset.cat === cat); }
-  });
-  // re-observe cards
-  setTimeout(() => observeCards(), 50);
-}
-
-document.querySelectorAll('.cat-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    showCat(tab.dataset.cat);
-    // scroll list page to groups
-    document.getElementById('page-list').scrollTo({ top: 160, behavior: 'smooth' });
-  });
-});
-
-/* ─── SCROLL FADE ─── */
-const listIO = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); listIO.unobserve(e.target); }});
-}, { threshold: 0.06 });
-
-function observeCards() {
-  document.querySelectorAll('.m-card:not(.visible)').forEach((el,i) => {
-    el.style.transitionDelay = `${i*50}ms`;
-    listIO.observe(el);
-  });
-}
-document.querySelectorAll('.fu').forEach(el => listIO.observe(el));
-observeCards();
-
-/* ─── DETAIL ─── */
-function buildDetail(p) {
-  const d = p.detail;
-  return `
-    <div class="d-hero fu">
-      <p class="d-scene-tag">${p.scene} · ${p.subtitle}</p>
-      <h2 class="d-title">${p.title} <em>${p.titleEm}</em></h2>
-      <p class="d-subtitle">${p.subtitle}</p>
-      <div class="d-copy-block"><p class="d-copy">${d.mainCopy}</p></div>
-      <p class="d-role-label">Directed by</p>
-      <span class="d-role-name">${d.role}</span>
-      <span class="d-role-name em">${d.roleName}</span>
     </div>
-    <div class="d-section fu">
-      <div class="d-sec-header"><span class="d-sec-num">01</span><span class="d-sec-title">Before</span><span class="d-sec-rule"></span></div>
-      <div class="two-col">
-        <div class="img-block square"><img src="${d.before[0]}" loading="lazy"><span class="img-lbl">Before · 01</span></div>
-        <div class="img-block square"><img src="${d.before[1]}" loading="lazy"><span class="img-lbl">Before · 02</span></div>
+  </section>
+
+  <div class="intro-bar">
+    <div class="intro-text">5개 공간, <em>하나의 철학.</em><br>카테고리를 선택해 프로젝트를 확인하세요.</div>
+    <div class="intro-sub">거실 · 방 · 드레스룸<br>욕실 · 다이닝룸</div>
+  </div>
+
+  <section class="categories-section" id="categories">
+    <div class="cat-header">
+      <div><p class="cat-label-text">Categories</p><h2 class="cat-title">공간별<br>프로젝트</h2></div>
+      <span class="cat-count">5 Spaces</span>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card" onclick="openSpace('living')"><div class="cat-card-inner"><div class="cat-bg"></div><div class="cat-overlay"></div><div class="cat-info"><div><span class="cat-num">01</span><span class="cat-name">거실</span></div><div class="cat-arrow">→</div></div></div></div>
+      <div class="cat-card" onclick="openSpace('bedroom')"><div class="cat-card-inner"><div class="cat-bg"></div><div class="cat-overlay"></div><div class="cat-info"><div><span class="cat-num">02</span><span class="cat-name">방</span></div><div class="cat-arrow">→</div></div></div></div>
+      <div class="cat-card" onclick="openSpace('dressroom')"><div class="cat-card-inner"><div class="cat-bg"></div><div class="cat-overlay"></div><div class="cat-info"><div><span class="cat-num">03</span><span class="cat-name">드레스룸</span></div><div class="cat-arrow">→</div></div></div></div>
+      <div class="cat-card" onclick="openSpace('bathroom')"><div class="cat-card-inner"><div class="cat-bg"></div><div class="cat-overlay"></div><div class="cat-info"><div><span class="cat-num">04</span><span class="cat-name">욕실</span></div><div class="cat-arrow">→</div></div></div></div>
+      <div class="cat-card" onclick="openSpace('dining')"><div class="cat-card-inner"><div class="cat-bg"></div><div class="cat-overlay"></div><div class="cat-info"><div><span class="cat-num">05</span><span class="cat-name">다이닝룸</span></div><div class="cat-arrow">→</div></div></div></div>
+    </div>
+  </section>
+
+  <footer><div class="footer-logo">Space<span>&</span>Order</div><div class="footer-info">홈 수납정리 & 스타일링 포트폴리오<br>© 2025 Space & Order Studio</div></footer>
+</div>
+
+<!-- ══════════ SPACE PAGE ══════════ -->
+
+<div id="space-page" class="page">
+
+  <section class="sp-hero">
+    <div class="sp-hero-left">
+      <div class="sp-scene-tag"><span id="sp-num" style="font-size:9px;opacity:0.7"></span>Scene — <span id="sp-name-tag"></span></div>
+      <h1 class="sp-title" id="sp-title"></h1>
+      <div class="sp-copy" id="sp-copy"></div>
+      <span class="sp-role">기획 · 수납 설계 · 오브젝트 큐레이션</span>
+    </div>
+    <div class="sp-hero-right">
+      <div class="sp-hero-bg" id="sp-hero-bg">
+        <div class="sp-placeholder">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6B9E97" stroke-width="1"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span>메인 컷 업로드</span>
+        </div>
       </div>
     </div>
-    <div class="d-section fu">
-      <div class="d-sec-header"><span class="d-sec-num">02</span><span class="d-sec-title">AI Design Blueprint</span><span class="d-sec-rule"></span></div>
-      <div class="img-block wide" style="margin:0 22px;border-radius:2px;"><img src="${d.blueprint.img}" loading="lazy"><span class="img-lbl">AI Blueprint</span></div>
-      <div class="blueprint-note"><p><strong>AI 시공간 설계도.</strong> ${d.blueprint.note}</p></div>
+  </section>
+
+  <section class="sp-sec sp-before">
+    <p class="sp-sec-label reveal">01</p>
+    <h2 class="sp-sec-title reveal">Before</h2>
+    <div class="two-col">
+      <div class="reveal"><div class="img-block" id="before-a-bg"><span class="img-block-label">Before Shot A</span></div><p class="img-caption" id="before-a-cap"></p></div>
+      <div class="reveal"><div class="img-block" id="before-b-bg"><span class="img-block-label">Before Shot B</span></div><p class="img-caption" id="before-b-cap"></p></div>
     </div>
-    <div class="d-section fu">
-      <div class="d-sec-header"><span class="d-sec-num">03</span><span class="d-sec-title">After — Best Cut</span><span class="d-sec-rule"></span></div>
-      <div class="full-bleed"><img src="${d.after}" loading="lazy"><span class="img-lbl after">After · Best Cut</span></div>
-      <div class="after-caption"><p>시공 완료 후, 시네마틱 조명과 구도로 포착한 메인 컷.</p></div>
-      ${d.metrics ? `
-      <div class="impact-block" style="margin-top:14px;">
-        <span class="impact-label">Impact</span>
-        <ul class="impact-list">
-          ${d.metrics.map(m => `
-            <li class="impact-item">
-              <span class="impact-dot"></span>
-              <span class="impact-text">${m}</span>
-            </li>`).join('')}
-        </ul>
-      </div>` : ''}
-    </div>
-    <div class="d-section fu">
-      <div class="d-sec-header"><span class="d-sec-num">04</span><span class="d-sec-title">Organizing Detail</span><span class="d-sec-rule"></span></div>
-      <div class="two-col">
-        <div class="img-block square"><img src="${d.organizing[0]}" loading="lazy"><span class="img-lbl">수납 프로토콜 · A</span></div>
-        <div class="img-block square"><img src="${d.organizing[1]}" loading="lazy"><span class="img-lbl">수납 프로토콜 · B</span></div>
+  </section>
+
+  <section class="sp-sec sp-blueprint">
+    <p class="sp-sec-label reveal">02</p>
+    <h2 class="sp-sec-title reveal">AI Blueprint</h2>
+    <div class="bp-grid reveal">
+      <div class="bp-visual"><div class="bp-grid-bg"></div><span class="bp-vis-label">시안 이미지</span></div>
+      <div>
+        <div class="bp-principle"><strong>제작 원칙</strong>AI는 시각화 도구로만 활용합니다. 공간 분석·동선 설계·오브젝트 선별은 기획자의 판단으로 이루어지며, 모든 큐레이션 근거는 텍스트로 명시합니다.</div>
+        <div id="bp-items"></div>
       </div>
     </div>
-    <div class="d-section fu">
-      <div class="d-sec-header"><span class="d-sec-num">05</span><span class="d-sec-title">Object &amp; Texture</span><span class="d-sec-rule"></span></div>
-      <div class="two-col">
-        <div class="img-block portrait"><img src="${d.texture[0]}" loading="lazy"><span class="img-lbl">소재 · 01</span></div>
-        <div class="img-block portrait"><img src="${d.texture[1]}" loading="lazy"><span class="img-lbl">오브젝트 · 02</span></div>
+  </section>
+
+  <section class="sp-sec sp-after">
+    <div class="after-full" id="after-bg"><div class="best-tag">★ Best Cut</div></div>
+    <div class="after-bottom reveal">
+      <div class="after-h">After —<br>공간이 달라졌다.</div>
+      <div class="after-meta" id="after-meta"></div>
+    </div>
+  </section>
+
+  <section class="sp-sec sp-detail">
+    <p class="sp-sec-label reveal">04</p>
+    <h2 class="sp-sec-title reveal">Organizing Detail</h2>
+    <div class="two-col">
+      <div class="reveal"><div class="detail-img" id="detail-a-bg"><span class="img-block-label">수납 프로토콜 ①</span></div><div class="detail-line"></div><p class="detail-cap" id="detail-a-cap"></p></div>
+      <div class="reveal"><div class="detail-img" id="detail-b-bg"><span class="img-block-label">수납 프로토콜 ②</span></div><div class="detail-line"></div><p class="detail-cap" id="detail-b-cap"></p></div>
+    </div>
+  </section>
+
+  <section class="sp-sec sp-texture">
+    <p class="sp-sec-label reveal">05</p>
+    <h2 class="sp-sec-title reveal">Object & Texture</h2>
+    <div class="tex-grid reveal">
+      <div class="tex-main" id="tex-main"></div>
+      <div class="tex-side">
+        <div class="tex-sm" id="tex-sm1"></div>
+        <div class="tex-sm" style="background:linear-gradient(135deg,#2E2E2C 0%,#1A1A18 100%)"></div>
       </div>
     </div>
-    <div class="d-section fu">
-      <div class="d-sec-header"><span class="d-sec-num">06</span><span class="d-sec-title">Color &amp; Material Palette</span><span class="d-sec-rule"></span></div>
-      <div class="palette-wrap">
-        <div class="color-chips">${d.palette.map(c=>`<div class="chip"><div class="chip-swatch" style="background:${c.hex}"></div><span class="chip-hex">${c.hex}</span><span class="chip-name">${c.name}</span></div>`).join('')}</div>
-        <div class="material-row">${d.materials.map(m=>`<div class="mat-chip"><div class="mat-swatch"${m.bg?` style="background:${m.bg}"`:''}>${m.img?`<img src="${m.img}" loading="lazy">`:''}  </div><span class="mat-label">${m.label}</span></div>`).join('')}</div>
-      </div>
+  </section>
+
+  <section class="sp-sec sp-palette">
+    <p class="sp-sec-label reveal">06</p>
+    <h2 class="sp-sec-title reveal">Color & Material Palette</h2>
+    <div class="chips reveal" id="chips"></div>
+    <div class="mats reveal" id="mats"></div>
+  </section>
+
+  <section class="sp-note">
+    <div class="note-inner reveal">
+      <div class="note-label">Director's Note</div>
+      <p class="note-text" id="note-text"></p>
+      <div class="note-sign">— Space & Order Studio</div>
     </div>
-    <div class="directors-note fu">
-      <span class="note-label">Director's Note</span>
-      <p class="note-text">${d.directorNote}</p>
-      <p class="note-sign">— ${d.roleName}, Space Curator</p>
-    </div>
-  `;
+  </section>
+
+  <footer><div class="footer-logo">Space<span>&</span>Order</div><div class="footer-info">홈 수납정리 & 스타일링 포트폴리오<br>© 2025 Space & Order Studio</div></footer>
+</div>
+
+<script>
+const SPACES = {
+  living:{name:'거실',num:'01',accent:'#A8C4BE',accentLight:'#C8DDD9',accentDark:'#6B9E97',heroBg:'linear-gradient(145deg,#C8DDD9 0%,#A8C4BE 50%,#8AAEA7 100%)',t1:'A-01 Living Room',t2:'Reorder',copy:'비어있음이 곧 여유다.<br>이 공간은 숨을 쉰다.',baA:'linear-gradient(160deg,#E5DFD8 0%,#D0C9BF 100%)',bcA:'공간의 현재 상태 — 북쪽 벽면',baB:'linear-gradient(160deg,#DDD8D0 0%,#C8C2B8 100%)',bcB:'공간의 현재 상태 — 수납장 전면',bp:['소파와 TV 사이 동선 확보 — 최소 80cm 유지','자주 쓰는 오브젝트는 눈높이 이하 배치','포인트 컬러 오브젝트는 3개 이하로 제한','계절 용품은 최상단 또는 문 안쪽으로 분리'],afterBg:'linear-gradient(135deg,#C8DDD9 0%,#E8E3DA 50%,#D4C9B8 100%)',am:'A-01 Living Room Reorder<br>완료일 — 2025. 03<br>촬영 — 기획자 직접 촬영',daA:'linear-gradient(155deg,#C8DDD9 0%,#E8E3DA 100%)',dcA:'자주 쓰는 물건은 눈높이 이하, 계절 용품은 최상단으로 분리',daB:'linear-gradient(155deg,#D4C9B8 0%,#E8E3DA 100%)',dcB:'같은 카테고리는 한 존으로 — 시각적 노이즈를 줄이는 클러스터 방식',txM:'linear-gradient(145deg,#D4C9B8 0%,#E8E3DA 60%,#C8DDD9 100%)',txS:'linear-gradient(135deg,#A8C4BE 0%,#6B9E97 100%)',chips:[{n:'Cream White',h:'#F7F4EF',b:'#F7F4EF',br:'1px solid #E0D9CE'},{n:'Dusty Teal',h:'#A8C4BE',b:'#A8C4BE'},{n:'Teal Dark',h:'#6B9E97',b:'#6B9E97'},{n:'Warm Sand',h:'#D4C9B8',b:'#D4C9B8'},{n:'Charcoal',h:'#1E1E1C',b:'#1E1E1C'}],mats:[{l:'Oak Wood',b:'linear-gradient(135deg,#C8A882,#B08A5E)'},{l:'Linen Fabric',b:'linear-gradient(135deg,#D6D2CC,#C4C0B8)'},{l:'Matte Ceramic',b:'linear-gradient(135deg,#A8C4BE,#85ADA5)'},{l:'Black Steel',b:'linear-gradient(135deg,#2E2E2C,#1A1A18)'}],note:'좋은 공간은 <em>설명하지 않아도</em><br>스스로 말을 합니다.<br><br>거실은 집의 첫 문장입니다.<br>그 문장을 <em>단단하고 조용하게</em> 쓰는 것,<br>그것이 이 프로젝트의 전부였습니다.'},
+  bedroom:{name:'방',num:'02',accent:'#B8C8D0',accentLight:'#D4E2E8',accentDark:'#7A9EB0',heroBg:'linear-gradient(145deg,#D4E2E8 0%,#B8C8D0 50%,#90AABB 100%)',t1:'B-01 Bedroom',t2:'Calm',copy:'잠들기 전, 마지막으로 보는 공간이<br>이래야 한다.',baA:'linear-gradient(160deg,#E2DED8 0%,#D2CEC8 100%)',bcA:'공간의 현재 상태 — 침대 헤드 벽면',baB:'linear-gradient(160deg,#DAD6D0 0%,#C8C4BC 100%)',bcB:'공간의 현재 상태 — 옷장 및 사이드테이블',bp:['침대 양측 동선 최소 60cm 확보','취침 전 사용 물건만 사이드테이블에 배치','수면을 방해하는 전자기기는 동선 밖으로 이동','조명은 간접광 위주, 눈 피로 최소화'],afterBg:'linear-gradient(135deg,#D4E2E8 0%,#EAE6E0 50%,#D4C9B8 100%)',am:'B-01 Bedroom Calm<br>완료일 — 2025. 03<br>촬영 — 기획자 직접 촬영',daA:'linear-gradient(155deg,#D4E2E8 0%,#E8E3DA 100%)',dcA:'침구류는 계절별로 — 현재 시즌 외 아이템은 압축팩으로 분리 보관',daB:'linear-gradient(155deg,#E2DCD4 0%,#EAE6E0 100%)',dcB:'사이드테이블은 최소 3가지 이하의 오브젝트만 — 노이즈 없는 취침 환경',txM:'linear-gradient(145deg,#D4E2E8 0%,#E8E3DA 60%,#D4C9B8 100%)',txS:'linear-gradient(135deg,#B8C8D0 0%,#7A9EB0 100%)',chips:[{n:'Cream White',h:'#F7F4EF',b:'#F7F4EF',br:'1px solid #E0D9CE'},{n:'Slate Blue',h:'#B8C8D0',b:'#B8C8D0'},{n:'Steel Blue',h:'#7A9EB0',b:'#7A9EB0'},{n:'Warm Sand',h:'#D4C9B8',b:'#D4C9B8'},{n:'Charcoal',h:'#1E1E1C',b:'#1E1E1C'}],mats:[{l:'Oak Wood',b:'linear-gradient(135deg,#C8A882,#B08A5E)'},{l:'Cotton Bedding',b:'linear-gradient(135deg,#E4E0DA,#D0CCC6)'},{l:'Velvet Cushion',b:'linear-gradient(135deg,#B8C8D0,#90AABB)'},{l:'Black Frame',b:'linear-gradient(135deg,#2E2E2C,#1A1A18)'}],note:'방은 <em>하루의 마지막 장면</em>입니다.<br><br>눈을 감기 전 보는 공간이<br>어지럽다면, 마음도 어지럽습니다.<br>이 공간을 <em>조용하고 단단하게</em> 정돈했습니다.'},
+  dressroom:{name:'드레스룸',num:'03',accent:'#C4B8D4',accentLight:'#DCD4E8',accentDark:'#8A789E',heroBg:'linear-gradient(145deg,#DCD4E8 0%,#C4B8D4 50%,#A094B8 100%)',t1:'C-01 Dressroom',t2:'Edit',copy:'옷을 고르는 시간이 짧아질수록<br>하루가 가벼워진다.',baA:'linear-gradient(160deg,#E0DCD8 0%,#D0CCC8 100%)',bcA:'공간의 현재 상태 — 행거 및 상하단 수납',baB:'linear-gradient(160deg,#D8D4D0 0%,#C8C4C0 100%)',bcB:'공간의 현재 상태 — 소품·액세서리 수납',bp:['자주 입는 옷은 눈높이 행거에, 계절 외 옷은 상단 수납','컬러 그라데이션 정렬로 시각적 통일감 확보','소품은 투명 케이스 또는 오픈 트레이로 가시성 유지','하단 수납박스는 라벨링으로 즉시 식별 가능하게'],afterBg:'linear-gradient(135deg,#DCD4E8 0%,#EAE6E0 50%,#D4C9B8 100%)',am:'C-01 Dressroom Edit<br>완료일 — 2025. 03<br>촬영 — 기획자 직접 촬영',daA:'linear-gradient(155deg,#DCD4E8 0%,#E8E3DA 100%)',dcA:'컬러별 정렬 — 밝은 컬러에서 어두운 컬러 순으로 시각 흐름 정리',daB:'linear-gradient(155deg,#C4B8D4 0%,#D4C9B8 100%)',dcB:'액세서리는 오픈 트레이에 — 열지 않아도 한눈에 보이는 구조',txM:'linear-gradient(145deg,#DCD4E8 0%,#E8E3DA 60%,#C4B8D4 100%)',txS:'linear-gradient(135deg,#C4B8D4 0%,#8A789E 100%)',chips:[{n:'Cream White',h:'#F7F4EF',b:'#F7F4EF',br:'1px solid #E0D9CE'},{n:'Soft Mauve',h:'#C4B8D4',b:'#C4B8D4'},{n:'Muted Plum',h:'#8A789E',b:'#8A789E'},{n:'Warm Sand',h:'#D4C9B8',b:'#D4C9B8'},{n:'Charcoal',h:'#1E1E1C',b:'#1E1E1C'}],mats:[{l:'Oak Shelf',b:'linear-gradient(135deg,#C8A882,#B08A5E)'},{l:'Acrylic Box',b:'linear-gradient(135deg,#F0ECE8,#E0DCD8)'},{l:'Velvet Tray',b:'linear-gradient(135deg,#C4B8D4,#A094B8)'},{l:'Black Hanger',b:'linear-gradient(135deg,#2E2E2C,#1A1A18)'}],note:'드레스룸은 <em>하루를 시작하는 공간</em>입니다.<br><br>어디에 무엇이 있는지 알면<br>선택에 에너지를 낭비하지 않아도 됩니다.<br><em>편집된 공간</em>이 편집된 하루를 만듭니다.'},
+  bathroom:{name:'욕실',num:'04',accent:'#A8C0C4',accentLight:'#C4D8DC',accentDark:'#6A9298',heroBg:'linear-gradient(145deg,#C4D8DC 0%,#A8C0C4 50%,#7AAAB0 100%)',t1:'D-01 Bathroom',t2:'Refresh',copy:'5분의 루틴을 위해,<br>공간이 준비되어 있어야 한다.',baA:'linear-gradient(160deg,#DCDAD8 0%,#CCCAC8 100%)',bcA:'공간의 현재 상태 — 세면대 및 거울 주변',baB:'linear-gradient(160deg,#D8D6D4 0%,#C8C6C4 100%)',bcB:'공간의 현재 상태 — 샤워 구역 및 선반',bp:['매일 쓰는 제품만 카운터탑에 — 나머지는 수납장 안으로','동일 용기 시리즈로 통일해 시각적 노이즈 제거','수건은 폴딩 방식 통일 — 세로 롤 또는 가로 3단','청소 용품은 별도 언더싱크 구역으로 완전 분리'],afterBg:'linear-gradient(135deg,#C4D8DC 0%,#EAE6E0 50%,#D4C9B8 100%)',am:'D-01 Bathroom Refresh<br>완료일 — 2025. 03<br>촬영 — 기획자 직접 촬영',daA:'linear-gradient(155deg,#C4D8DC 0%,#E8E3DA 100%)',dcA:'동일 용기 시리즈 — 라벨 제거 후 머티리얼 통일, 시선이 멈추지 않는 선반',daB:'linear-gradient(155deg,#A8C0C4 0%,#D4C9B8 100%)',dcB:'수건 폴딩 통일 — 세로 롤 방식, 두께와 컬러 그러데이션으로 정렬',txM:'linear-gradient(145deg,#C4D8DC 0%,#EAE6E0 60%,#A8C0C4 100%)',txS:'linear-gradient(135deg,#A8C0C4 0%,#6A9298 100%)',chips:[{n:'Cream White',h:'#F7F4EF',b:'#F7F4EF',br:'1px solid #E0D9CE'},{n:'Mist Teal',h:'#A8C0C4',b:'#A8C0C4'},{n:'Deep Mist',h:'#6A9298',b:'#6A9298'},{n:'Warm Sand',h:'#D4C9B8',b:'#D4C9B8'},{n:'Charcoal',h:'#1E1E1C',b:'#1E1E1C'}],mats:[{l:'White Ceramic',b:'linear-gradient(135deg,#E8E4E0,#D8D4D0)'},{l:'Frosted Glass',b:'linear-gradient(135deg,#F0F0EE,#E0E0DC)'},{l:'Stone Texture',b:'linear-gradient(135deg,#A8C0C4,#7AAAB0)'},{l:'Matte Black',b:'linear-gradient(135deg,#2E2E2C,#1A1A18)'}],note:'욕실은 <em>루틴이 사는 공간</em>입니다.<br><br>아침 5분, 저녁 10분 —<br>그 짧은 시간이 하루의 밀도를 결정합니다.<br>공간이 루틴을 <em>방해하지 않도록</em> 설계했습니다.'},
+  dining:{name:'다이닝룸',num:'05',accent:'#C4B49C',accentLight:'#D8CCBC',accentDark:'#96806A',heroBg:'linear-gradient(145deg,#D8CCBC 0%,#C4B49C 50%,#A8927C 100%)',t1:'E-01 Dining Room',t2:'Table',copy:'식탁은 하루를 시작하고 마무리하는<br>의식의 공간이다.',baA:'linear-gradient(160deg,#E0DCD6 0%,#D0CCC6 100%)',bcA:'공간의 현재 상태 — 식탁 및 의자 배치',baB:'linear-gradient(160deg,#DADAD4 0%,#C8C8C2 100%)',bcB:'공간의 현재 상태 — 수납장·주방 연결 구역',bp:['식탁 위는 항상 비워두는 것을 원칙으로 — 식사 시에만 세팅','자주 쓰는 식기는 오픈 선반 전면, 나머지는 캐비닛 안으로','조명은 식탁 정중앙, 시선이 테이블로 모이는 구도','포인트 오브젝트는 꽃병 또는 캔들 하나로 최소화'],afterBg:'linear-gradient(135deg,#D8CCBC 0%,#E8E3DA 50%,#D4C9B8 100%)',am:'E-01 Dining Room Table<br>완료일 — 2025. 03<br>촬영 — 기획자 직접 촬영',daA:'linear-gradient(155deg,#D8CCBC 0%,#E8E3DA 100%)',dcA:'식기 오픈 선반 — 자주 쓰는 것은 전면, 나머지는 안쪽으로 깊이감 연출',daB:'linear-gradient(155deg,#C4B49C 0%,#D4C9B8 100%)',dcB:'테이블 세팅 룰 — 식사 전후 즉시 원상복귀, 빈 테이블이 기본 상태',txM:'linear-gradient(145deg,#D8CCBC 0%,#E8E3DA 60%,#C4B49C 100%)',txS:'linear-gradient(135deg,#C4B49C 0%,#96806A 100%)',chips:[{n:'Cream White',h:'#F7F4EF',b:'#F7F4EF',br:'1px solid #E0D9CE'},{n:'Warm Latte',h:'#C4B49C',b:'#C4B49C'},{n:'Warm Brown',h:'#96806A',b:'#96806A'},{n:'Warm Sand',h:'#D4C9B8',b:'#D4C9B8'},{n:'Charcoal',h:'#1E1E1C',b:'#1E1E1C'}],mats:[{l:'Walnut Table',b:'linear-gradient(135deg,#B8906A,#9A7050)'},{l:'White Ware',b:'linear-gradient(135deg,#E8E4E0,#D8D4D0)'},{l:'Rattan Chair',b:'linear-gradient(135deg,#C4B49C,#96806A)'},{l:'Iron Fixture',b:'linear-gradient(135deg,#2E2E2C,#1A1A18)'}],note:'다이닝룸은 <em>의식의 공간</em>입니다.<br><br>비워진 식탁 위에 놓인 한 송이 꽃,<br>그것이 식사의 밀도를 바꿉니다.<br><em>덜어내는 것</em>이 가장 아름다운 스타일링입니다.'}
+};
+
+const root = document.documentElement;
+
+function openSpace(key) {
+  const d = SPACES[key];
+
+  root.style.setProperty('--accent', d.accent);
+  root.style.setProperty('--accent-light', d.accentLight);
+  root.style.setProperty('--accent-dark', d.accentDark);
+
+  document.getElementById('sp-num').textContent = d.num;
+  document.getElementById('sp-name-tag').textContent = d.name;
+  document.getElementById('sp-title').innerHTML = `${d.t1}<br><em>${d.t2}</em>`;
+  document.getElementById('sp-copy').innerHTML = `"${d.copy}"`;
+  document.getElementById('sp-hero-bg').style.background = d.heroBg;
+
+  document.getElementById('before-a-bg').style.background = d.baA;
+  document.getElementById('before-a-cap').textContent = d.bcA;
+  document.getElementById('before-b-bg').style.background = d.baB;
+  document.getElementById('before-b-cap').textContent = d.bcB;
+
+  document.getElementById('bp-items').innerHTML = d.bp.map((t,i) =>
+    `<div class="bp-row"><span class="bp-num">0${i+1}</span><span class="bp-text">${t}</span></div>`
+  ).join('');
+
+  document.getElementById('after-bg').style.background = d.afterBg;
+  document.getElementById('after-meta').innerHTML = d.am;
+
+  document.getElementById('detail-a-bg').style.background = d.daA;
+  document.getElementById('detail-a-cap').textContent = `"${d.dcA}"`;
+  document.getElementById('detail-b-bg').style.background = d.daB;
+  document.getElementById('detail-b-cap').textContent = `"${d.dcB}"`;
+
+  document.getElementById('tex-main').style.background = d.txM;
+  document.getElementById('tex-sm1').style.background = d.txS;
+
+  document.getElementById('chips').innerHTML = d.chips.map(c =>
+    `<div class="chip"><div class="chip-sw" style="background:${c.b};${c.br?'border:'+c.br:''}"></div><span class="chip-name">${c.n}</span><span class="chip-hex">${c.h}</span></div>`
+  ).join('');
+
+  document.getElementById('mats').innerHTML = d.mats.map(m =>
+    `<div class="mat-item"><div class="mat-sw" style="background:${m.b}"></div><span class="mat-label">${m.l}</span></div>`
+  ).join('');
+
+  document.getElementById('note-text').innerHTML = d.note;
+
+  const tag = document.getElementById('nav-tag');
+  tag.textContent = d.name;
+  tag.style.color = d.accentDark;
+  tag.style.borderColor = d.accentDark;
+  tag.classList.add('show');
+  document.getElementById('nav-back').classList.add('show');
+
+  document.querySelectorAll('#space-page .reveal').forEach(el => el.classList.remove('visible'));
+
+  document.getElementById('main-page').classList.remove('active');
+  document.getElementById('space-page').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+
+  setTimeout(initReveal, 80);
 }
 
-const pageList = document.getElementById('page-list');
-const pageDetail = document.getElementById('page-detail');
-const detailContent = document.getElementById('detail-content');
-
-function openDetail(p) {
-  document.getElementById('d-nav-label').textContent = p.scene;
-  detailContent.innerHTML = buildDetail(p);
-  pageDetail.scrollTop = 0;
-  pageList.classList.add('exit');
-  pageDetail.classList.add('enter');
-  requestAnimationFrame(() => {
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); }});
-    }, { threshold: 0.06 });
-    detailContent.querySelectorAll('.fu').forEach(el => io.observe(el));
-  });
-}
-function goBack() {
-  pageDetail.classList.remove('enter');
-  pageList.classList.remove('exit');
-  setTimeout(() => { detailContent.innerHTML = ''; }, 450);
-}
-document.getElementById('back-btn').addEventListener('click', goBack);
-let sx=0, sy=0;
-pageDetail.addEventListener('touchstart', e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; }, {passive:true});
-pageDetail.addEventListener('touchend', e=>{
-  const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
-  if(dx>60 && Math.abs(dy)<60 && sx<44) goBack();
-}, {passive:true});
-
-/* ─── POPUP ─── */
-let currentPopup = null;
-
-function openPopup(name) {
-  closePopup(); // 혹시 열려있는 거 먼저 닫기
-  const box = document.getElementById('popup-' + name);
-  if (!box) return;
-  currentPopup = name;
-  document.getElementById('popup-backdrop').classList.add('open');
-  box.classList.add('open');
+function goHome() {
+  document.getElementById('space-page').classList.remove('active');
+  document.getElementById('main-page').classList.add('active');
+  document.getElementById('nav-tag').classList.remove('show');
+  document.getElementById('nav-back').classList.remove('show');
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
-function closePopup() {
-  if (!currentPopup) return;
-  document.getElementById('popup-' + currentPopup)?.classList.remove('open');
-  document.getElementById('popup-backdrop').classList.remove('open');
-  currentPopup = null;
+function initReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('#space-page .reveal:not(.visible)').forEach(el => obs.observe(el));
 }
 
-// 바텀 nav 클릭
-document.querySelectorAll('.nav-item[data-popup]').forEach(item => {
-  item.addEventListener('click', () => {
-    const name = item.dataset.popup;
-    if (currentPopup === name) { closePopup(); return; }
-    openPopup(name);
-  });
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').style.padding = window.scrollY > 60 ? '14px 56px' : '24px 56px';
 });
-
-// 헤더 링크 클릭
-document.querySelectorAll('.header-link[data-popup]').forEach(link => {
-  link.addEventListener('click', () => {
-    const name = link.dataset.popup;
-    if (currentPopup === name) { closePopup(); return; }
-    openPopup(name);
-  });
-});
-
-// 배경 클릭 시 닫기
-document.getElementById('popup-backdrop').addEventListener('click', closePopup);
 </script>
 
 </body>
